@@ -3,45 +3,78 @@ package com.deliamo.spywarecheck
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.deliamo.spywarecheck.ui.navigation.Routes
+import com.deliamo.spywarecheck.ui.screens.start.DebugNavPanel
+import com.deliamo.spywarecheck.ui.screens.start.FindingDetailScreen
+import com.deliamo.spywarecheck.ui.screens.start.QuickCheckScreen
+import com.deliamo.spywarecheck.ui.screens.start.ResultScreen
+import com.deliamo.spywarecheck.ui.screens.start.SafetyGateScreen
+import com.deliamo.spywarecheck.ui.screens.start.ScanScreen
+import com.deliamo.spywarecheck.ui.screens.start.StartScreen
 import com.deliamo.spywarecheck.ui.theme.SpywareCheckTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContent {
-            SpywareCheckTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+            SpywareCheckTheme() {
+                SpywareCheckApp()
             }
         }
     }
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+fun SpywareCheckApp() {
+    val navController = rememberNavController()
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    SpywareCheckTheme {
-        Greeting("Android")
+    NavHost(
+        navController = navController,
+        startDestination = Routes.START
+    ) {
+        composable(Routes.START) {
+            StartScreen(
+                onStartQuickCheck = {},
+                onQuickExit = {},
+                debugContent = { DebugNavPanel(navController) }
+            )
+        }
+
+        composable(Routes.QUICK_CHECK) {
+            QuickCheckScreen(
+                onDone = { navController.navigate(Routes.RESULT) }
+            )
+        }
+
+        composable(Routes.RESULT) {
+            ResultScreen(
+
+            )
+        }
+
+        composable(Routes.SAFETY_GATE) {
+            SafetyGateScreen(
+                onContinue = { navController.navigate(Routes.SCAN) },
+                onCancel = { navController.popBackStack() },
+            )
+        }
+
+        composable(Routes.SCAN) {
+            ScanScreen(
+                onOpenFinding = { navController.navigate(Routes.FINDING) },
+            )
+        }
+
+        composable(Routes.FINDING) {
+            FindingDetailScreen(
+                onBack = { navController.popBackStack() },
+            )
+        }
+
     }
 }
