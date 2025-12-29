@@ -30,7 +30,7 @@ class MainActivity : ComponentActivity() {
             WindowManager.LayoutParams.FLAG_SECURE
         )
         setContent {
-            SpywareCheckTheme() {
+            SpywareCheckTheme {
                 SpywareCheckApp()
             }
         }
@@ -42,6 +42,7 @@ fun SpywareCheckApp() {
     val navController = rememberNavController()
     val context = LocalContext.current
     val quickExit: () -> Unit = { quickExitToBrowser(context) }
+    val goBack: () -> Unit = { navController.popBackStack() }
 
     NavHost(
         navController = navController,
@@ -51,13 +52,14 @@ fun SpywareCheckApp() {
             StartScreen(
                 onStartQuickCheck = {},
                 onQuickExit = quickExit,
+                // TODO remove debug content
                 debugContent = { DebugNavPanel(navController) }
             )
         }
 
         composable(Routes.QUICK_CHECK) {
             QuickCheckScreen(
-                onBack = { navController.popBackStack() },
+                onBack = goBack,
                 onDone = { navController.navigate(Routes.RESULT) },
                 onQuickExit = quickExit,
             )
@@ -65,23 +67,28 @@ fun SpywareCheckApp() {
 
         composable(Routes.RESULT) {
             ResultScreen(
-                onBack = { navController.popBackStack() },
+                onBack = goBack,
                 onQuickExit = quickExit,
             )
         }
 
         composable(Routes.SAFETY_GATE) {
             SafetyGateScreen(
-                onBack = { navController.popBackStack() },
-                onContinue = { navController.navigate(Routes.SCAN) },
-                onCancel = { navController.popBackStack() },
+                onBack = goBack,
+                onContinue = {
+                    navController.navigate(Routes.SCAN) {
+                        popUpTo(Routes.SAFETY_GATE) { inclusive = true }
+                    }
+                },
+                // TODO do something else than just go back
+                onCancel = goBack,
                 onQuickExit = quickExit,
             )
         }
 
         composable(Routes.SCAN) {
             ScanScreen(
-                onBack = { navController.popBackStack() },
+                onBack = goBack,
                 onOpenFinding = { navController.navigate(Routes.FINDING) },
                 onQuickExit = quickExit,
             )
@@ -89,7 +96,7 @@ fun SpywareCheckApp() {
 
         composable(Routes.FINDING) {
             FindingDetailScreen(
-                onBack = { navController.popBackStack() },
+                onBack = goBack,
                 onQuickExit = quickExit
             )
         }
