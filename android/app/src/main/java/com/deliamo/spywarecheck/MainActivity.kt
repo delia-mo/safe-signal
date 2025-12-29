@@ -74,14 +74,12 @@ fun SpywareCheckApp() {
 
         composable(Routes.SAFETY_GATE) {
             SafetyGateScreen(
-                onBack = goBack,
                 onContinue = {
-                    navController.navigate(Routes.SCAN) {
+                    navController.navigate(Routes.SCAN) { // TODO change to start scan screen
                         popUpTo(Routes.SAFETY_GATE) { inclusive = true }
                     }
                 },
-                // TODO do something else than just go back
-                onCancel = goBack,
+                onCancel = goBack, // Todo: go to Start Screen?
                 onQuickExit = quickExit,
             )
         }
@@ -89,8 +87,9 @@ fun SpywareCheckApp() {
         composable(Routes.SCAN) {
             ScanScreen(
                 onBack = goBack,
+                onStartScan = { navController.navigate(Routes.SAFETY_GATE) },
                 onOpenFinding = { navController.navigate(Routes.FINDING) },
-                onQuickExit = quickExit,
+                onQuickExit = quickExit
             )
         }
 
