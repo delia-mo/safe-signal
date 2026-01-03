@@ -10,7 +10,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.deliamo.spywarecheck.ui.navigation.Routes
-import com.deliamo.spywarecheck.ui.screens.start.DebugNavPanel
 import com.deliamo.spywarecheck.ui.screens.start.FindingDetailScreen
 import com.deliamo.spywarecheck.ui.screens.start.QuickCheckScreen
 import com.deliamo.spywarecheck.ui.screens.start.ResultScreen
@@ -22,83 +21,86 @@ import com.deliamo.spywarecheck.ui.util.quickExitToBrowser
 
 
 class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        window.setFlags(
-            // Disable Screenshots
-            WindowManager.LayoutParams.FLAG_SECURE,
-            WindowManager.LayoutParams.FLAG_SECURE
-        )
-        setContent {
-            SpywareCheckTheme {
-                SpywareCheckApp()
-            }
-        }
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    window.setFlags(
+      // Disable Screenshots
+      WindowManager.LayoutParams.FLAG_SECURE,
+      WindowManager.LayoutParams.FLAG_SECURE
+    )
+    setContent {
+      SpywareCheckTheme {
+        SpywareCheckApp()
+      }
     }
+  }
 }
 
 @Composable
 fun SpywareCheckApp() {
-    val navController = rememberNavController()
-    val context = LocalContext.current
-    val quickExit: () -> Unit = { quickExitToBrowser(context) }
-    val goBack: () -> Unit = { navController.popBackStack() }
+  val navController = rememberNavController()
+  val context = LocalContext.current
+  val quickExit: () -> Unit = { quickExitToBrowser(context) }
+  val startQuickCheck: () -> Unit = { navController.navigate(Routes.QUICK_CHECK)}
+  val startScanGated: () -> Unit = { navController.navigate(Routes.SAFETY_GATE)}
+  val goBack: () -> Unit = { navController.popBackStack() }
 
-    NavHost(
-        navController = navController,
-        startDestination = Routes.START
-    ) {
-        composable(Routes.START) {
-            StartScreen(
-                onStartQuickCheck = {},
-                onQuickExit = quickExit,
-                // TODO remove debug content
-                debugContent = { DebugNavPanel(navController) }
-            )
-        }
-
-        composable(Routes.QUICK_CHECK) {
-            QuickCheckScreen(
-                onBack = goBack,
-                onDone = { navController.navigate(Routes.RESULT) },
-                onQuickExit = quickExit,
-            )
-        }
-
-        composable(Routes.RESULT) {
-            ResultScreen(
-                onBack = goBack,
-                onQuickExit = quickExit,
-            )
-        }
-
-        composable(Routes.SAFETY_GATE) {
-            SafetyGateScreen(
-                onContinue = {
-                    navController.navigate(Routes.SCAN) { // TODO change to start scan screen
-                        popUpTo(Routes.SAFETY_GATE) { inclusive = true }
-                    }
-                },
-                onCancel = goBack, // Todo: go to Start Screen?
-                onQuickExit = quickExit,
-            )
-        }
-
-        composable(Routes.SCAN) {
-            ScanScreen(
-                onBack = goBack,
-                onStartScan = { navController.navigate(Routes.SAFETY_GATE) },
-                onOpenFinding = { navController.navigate(Routes.FINDING) },
-                onQuickExit = quickExit
-            )
-        }
-
-        composable(Routes.FINDING) {
-            FindingDetailScreen(
-                onBack = goBack,
-                onQuickExit = quickExit
-            )
-        }
-
+  NavHost(
+    navController = navController,
+    startDestination = Routes.START
+  ) {
+    composable(Routes.START) {
+      StartScreen(
+        onStartQuickCheck = startQuickCheck,
+        onStartScanGated = startScanGated,
+        onOpenReport = {},
+        onOpenActions = {},
+        onQuickExit = quickExit,
+      )
     }
+
+    composable(Routes.QUICK_CHECK) {
+      QuickCheckScreen(
+        onBack = goBack,
+        onDone = { navController.navigate(Routes.RESULT) },
+        onQuickExit = quickExit,
+      )
+    }
+
+    composable(Routes.RESULT) {
+      ResultScreen(
+        onBack = goBack,
+        onQuickExit = quickExit,
+      )
+    }
+
+    composable(Routes.SAFETY_GATE) {
+      SafetyGateScreen(
+        onContinue = {
+          navController.navigate(Routes.SCAN) { // TODO change to start scan screen
+            popUpTo(Routes.SAFETY_GATE) { inclusive = true }
+          }
+        },
+        onCancel = goBack, // Todo: go to Start Screen?
+        onQuickExit = quickExit,
+      )
+    }
+
+    composable(Routes.SCAN) {
+      ScanScreen(
+        onBack = goBack,
+        onStartScan = { navController.navigate(Routes.SAFETY_GATE) },
+        onOpenFinding = { navController.navigate(Routes.FINDING) },
+        onQuickExit = quickExit
+      )
+    }
+
+    composable(Routes.FINDING) {
+      FindingDetailScreen(
+        onBack = goBack,
+        onQuickExit = quickExit
+      )
+    }
+
+  }
 }
