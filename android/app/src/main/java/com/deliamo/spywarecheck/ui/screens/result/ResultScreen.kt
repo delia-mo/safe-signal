@@ -13,7 +13,8 @@ import com.deliamo.spywarecheck.ui.components.AppScaffold
 @Composable
 fun ResultScreen(
     onBack: () -> Unit,
- onQuickExit: () -> Unit
+    onQuickExit: () -> Unit,
+    onStartScanGated: () -> Unit
 ) {
     AppScaffold(
         title = "Result",
