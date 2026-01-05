@@ -41,8 +41,8 @@ fun SpywareCheckApp() {
   val navController = rememberNavController()
   val context = LocalContext.current
   val quickExit: () -> Unit = { quickExitToBrowser(context) }
-  val startQuickCheck: () -> Unit = { navController.navigate(Routes.QUICK_CHECK)}
-  val startScanGated: () -> Unit = { navController.navigate(Routes.SAFETY_GATE)}
+  val startQuickCheck: () -> Unit = { navController.navigate(Routes.QUICK_CHECK) }
+  val startScanGated: () -> Unit = { navController.navigate(Routes.SAFETY_GATE) }
   val goBack: () -> Unit = { navController.popBackStack() }
 
   NavHost(
@@ -70,6 +70,7 @@ fun SpywareCheckApp() {
     composable(Routes.RESULT) {
       ResultScreen(
         onBack = goBack,
+        onStartScanGated = { navController.navigate(Routes.SAFETY_GATE) },
         onQuickExit = quickExit,
       )
     }
