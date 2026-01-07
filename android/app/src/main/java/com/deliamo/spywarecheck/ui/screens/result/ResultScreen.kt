@@ -1,30 +1,76 @@
 package com.deliamo.spywarecheck.ui.screens.start
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.deliamo.spywarecheck.domain.model.QuickCheckResult
+import com.deliamo.spywarecheck.domain.model.QuickRisk
 import com.deliamo.spywarecheck.ui.components.AppScaffold
+import com.deliamo.spywarecheck.ui.components.BulletItem
+import com.deliamo.spywarecheck.ui.screens.quickcheck.QuickCheckViewModel
 
 @Composable
 fun ResultScreen(
     onBack: () -> Unit,
     onQuickExit: () -> Unit,
-    onStartScanGated: () -> Unit
+    onStartScanGated: () -> Unit,
+    vm: QuickCheckViewModel = viewModel()
 ) {
+    val result: QuickCheckResult = remember { vm.buildResult() }
     AppScaffold(
-        title = "Result",
+        title = "Ergebnis",
         onQuickExit = onQuickExit,
         showBack = true,
         onBack = onBack
     ) { padding ->
-        Column(Modifier.padding(padding).padding(16.dp)) {
-            Text("Nach Quick Check wird hier Triage Ergebnis angezeigt. Top 3 nächste Schritte werden angezeigt.")
-            Spacer(Modifier.height(12.dp))
+
+        Column(
+            modifier = Modifier
+                .padding(padding)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            val headline = when (result.risk) {
+                QuickRisk.LOW -> "Eher wenige Hinweise"
+                QuickRisk.MEDIUM -> "Einige Hinweise"
+                QuickRisk.HIGH -> "Viele Hinweise"
+            }
+
+            Text(headline, style = MaterialTheme.typography.titleLarge)
+            Text(result.summary, style = MaterialTheme.typography.bodyMedium)
+
+            HorizontalDivider()
+
+            Text("Nächste Schritte", style = MaterialTheme.typography.titleMedium)
+
+            result.top3.take(3).forEach { item ->
+                BulletItem(item)
+            }
+
+            Spacer(Modifier.height(8.dp))
+
+            Button(
+                onClick = onStartScanGated,
+                modifier = Modifier.fillMaxWidth()
+            ) { Text("Scan starten") }
+            Text(
+                text = "Scan startet immer über das Safety Gate.",
+                style = MaterialTheme.typography.bodySmall
+            )
         }
     }
 }
