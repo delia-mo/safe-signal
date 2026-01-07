@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -18,12 +19,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.deliamo.spywarecheck.ui.components.AppScaffold
 import com.deliamo.spywarecheck.ui.screens.scan.ScanTransparencyCard
 import com.deliamo.spywarecheck.ui.screens.scan.ScanUiState
 import com.deliamo.spywarecheck.ui.screens.scan.ScanViewModel
+import com.squareup.wire.internal.countNonNull
 
 @Composable
 fun ScanScreen(
@@ -33,7 +36,7 @@ fun ScanScreen(
     onQuickExit: () -> Unit,
     vm: ScanViewModel = viewModel()
 ) {
-    // val onStartScan = onStartScan
+    val context = LocalContext.current
     val state by vm.state.collectAsState()
 
     AppScaffold(
@@ -49,7 +52,6 @@ fun ScanScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-
             when (val s = state) {
                 is ScanUiState.Idle -> {
                     Text(
@@ -62,7 +64,7 @@ fun ScanScreen(
                     Spacer(Modifier.height(8.dp))
 
                     Button(
-                        onClick = { vm.startScan() },
+                        onClick = { vm.startScan(context) },
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text("Scan starten")
@@ -85,26 +87,47 @@ fun ScanScreen(
                         text = "Das kann einen Moment dauern.",
                         style = MaterialTheme.typography.bodySmall
                     )
+
+                    ScanTransparencyCard(modifier = Modifier.fillMaxWidth())
                 }
 
                 is ScanUiState.Done -> {
+                    val findingsCount = s.result.findings.size
                     Text(
                         text = "Scan abgeschlossen.",
                         style = MaterialTheme.typography.titleLarge
                     )
 
-                    val summary = if (s.findingsCount == 0) {
+                    val summary = if (findingsCount == 0) {
                         "Keine Hinweise gefunden."
                     } else {
-                        "${s.findingsCount} Hinweis(e) gefunden."
+                        "${findingsCount} Hinweis(e) gefunden."
                     }
+
                     Text(
                         text = summary,
                         style = MaterialTheme.typography.bodyMedium
                     )
 
+                    // TODO
+                    // Show affected apps inline
+                    if (findingsCount > 0) {
+                        HorizontalDivider()
+                        s.result.findings.take(3).forEach { f ->
+                            Text(f.title, style = MaterialTheme.typography.titleSmall)
+                            Text(f.summary, style = MaterialTheme.typography.bodySmall)
+                            if (f.affectedApps.isNotEmpty()) {
+                                Text(
+                                    text = "Betroffene Apps: " + f.affectedApps.joinToString(),
+                                    style = MaterialTheme.typography.bodySmall
+                                )
+                            }
+                            Spacer(Modifier.height(8.dp))
+                        }
+                    }
+
                     // View details
-                    if (s.findingsCount > 0 && onOpenFinding != null) {
+                    if (findingsCount > 0 && onOpenFinding != null) {
                         OutlinedButton(
                             onClick = onOpenFinding,
                             modifier = Modifier.fillMaxWidth()
@@ -112,7 +135,7 @@ fun ScanScreen(
                     }
 
                     Button(
-                        onClick = { vm.startScan() },
+                        onClick = { vm.startScan(context) },
                         modifier = Modifier.fillMaxWidth()
                     ) { Text("Erneut scannen") }
 
@@ -130,7 +153,7 @@ fun ScanScreen(
                     style = MaterialTheme.typography.titleLarge
                 )
                 Button(
-                    onClick = { vm.startScan() },
+                    onClick = { vm.startScan(context) },
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text("Erneut versuchen")

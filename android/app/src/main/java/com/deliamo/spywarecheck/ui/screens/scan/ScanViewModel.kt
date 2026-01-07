@@ -1,7 +1,10 @@
 package com.deliamo.spywarecheck.ui.screens.scan
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.deliamo.spywarecheck.data.scanner.AndroidScanner
+import com.deliamo.spywarecheck.domain.model.ScanResult
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -11,7 +14,7 @@ import kotlinx.coroutines.launch
 sealed interface ScanUiState {
     data object Idle : ScanUiState
     data object Running : ScanUiState
-    data class Done(val findingsCount: Int, val finishedAtMills: Long) : ScanUiState
+    data class Done(val result: ScanResult) : ScanUiState
     data class Error(val message: String) : ScanUiState
 }
 
@@ -19,7 +22,7 @@ class ScanViewModel: ViewModel() {
     private val _state = MutableStateFlow<ScanUiState>(ScanUiState.Idle)
     val state: StateFlow<ScanUiState> = _state.asStateFlow()
 
-    fun startScan() {
+    fun startScan(context: Context) {
         // Prevent double starts
         if (_state.value is ScanUiState.Running) return
 
@@ -27,16 +30,9 @@ class ScanViewModel: ViewModel() {
 
         viewModelScope.launch {
             try {
-                // TODO replace with real checks later
-                delay(1200)
-
-                // TODO compute from real checks
-                val findings = 0
-
-                _state.value = ScanUiState.Done(
-                    findingsCount = findings,
-                    finishedAtMills = System.currentTimeMillis()
-                )
+                val scanner = AndroidScanner(context.applicationContext)
+                val result = scanner.run()
+                _state.value = ScanUiState.Done(result)
             } catch (t: Throwable) {
                 _state.value = ScanUiState.Error(
                     message = t.message ?: "Scan konnte nicht ausgeführt werden."
