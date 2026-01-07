@@ -2,6 +2,7 @@ package com.deliamo.spywarecheck.data.scanner
 
 import android.accessibilityservice.AccessibilityServiceInfo
 import android.app.admin.DevicePolicyManager
+import android.content.ComponentName
 import android.view.accessibility.AccessibilityManager
 import android.content.Context
 import android.content.pm.ApplicationInfo
@@ -106,10 +107,36 @@ class AndroidScanner(
     private fun getActiveDeviceAdminApps(pm: PackageManager): List<String> {
         return try {
             val dpm = context.getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
-            val admins = dpm.activeAdmins ?: emptyList()
-            admins.mapNotNull { cn -> appLabel(pm, cn.packageName) }.distinct().sorted()
+            val admins = dpm.activeAdmins ?: return emptyList()
+
+            admins.map { cn -> resolveDeviceAdminLabel(pm, cn) }
+                .distinct()
+                .sorted()
         } catch (_: Throwable) {
             emptyList()
+        }
+    }
+
+    private fun resolveDeviceAdminLabel(pm: PackageManager, cn: ComponentName): String {
+        val receiverLabel = try {
+            val ri = pm.getReceiverInfo(cn, PackageManager.GET_META_DATA)
+            ri.loadLabel(pm)?.toString()
+        } catch (_: Throwable) {
+            null
+        }
+
+        val appLabel = appLabel(pm, cn.packageName)
+
+        // For multiple admins belonging to the same app/package
+        return when {
+            !receiverLabel.isNullOrBlank() && receiverLabel != appLabel ->
+                "$receiverLabel ($appLabel)"
+            !receiverLabel.isNullOrBlank() ->
+                "$receiverLabel (${cn.packageName})"
+            !appLabel.isNullOrBlank() ->
+                "$appLabel (${cn.packageName}"
+            else ->
+                cn.flattenToString()
         }
     }
 
