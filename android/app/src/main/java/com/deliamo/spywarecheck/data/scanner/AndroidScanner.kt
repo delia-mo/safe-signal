@@ -91,14 +91,23 @@ class AndroidScanner(
 
     private fun getEnabledAccessibilityApps(pm: PackageManager): List<String> {
         return try {
-            val am = context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
-            val services =
-                am.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_ALL_MASK)
+            val enabled = Settings.Secure.getInt(
+                context.contentResolver,
+                Settings.Secure.ACCESSIBILITY_ENABLED,
+                0
+            ) == 1
+            if (!enabled) return emptyList()
 
-            services.mapNotNull { s ->
-                val pkg = s.resolveInfo?.serviceInfo?.packageName ?: return@mapNotNull null
-                appLabel(pm, pkg)
-            }.distinct().sorted()
+            val setting = Settings.Secure.getString(
+                context.contentResolver,
+                Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES
+            ) ?: return emptyList()
+
+            val services = setting.split(':')
+                .mapNotNull { ComponentName.unflattenFromString(it) }
+            services.map { cn -> resolveDeviceAdminLabel(pm, cn) }
+                .distinct()
+                .sorted()
         } catch (_: Throwable) {
             emptyList()
         }
