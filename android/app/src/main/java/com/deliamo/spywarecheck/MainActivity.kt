@@ -6,10 +6,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.deliamo.spywarecheck.ui.navigation.Routes
+import com.deliamo.spywarecheck.ui.screens.quickcheck.QuickCheckViewModel
 import com.deliamo.spywarecheck.ui.screens.start.FindingDetailScreen
 import com.deliamo.spywarecheck.ui.screens.start.QuickCheckScreen
 import com.deliamo.spywarecheck.ui.screens.start.ResultScreen
@@ -44,6 +46,7 @@ fun SpywareCheckApp() {
   val startQuickCheck: () -> Unit = { navController.navigate(Routes.QUICK_CHECK) }
   val startScanGated: () -> Unit = { navController.navigate(Routes.SAFETY_GATE) }
   val goBack: () -> Unit = { navController.popBackStack() }
+  val quickCheckVm: QuickCheckViewModel = viewModel()
 
   NavHost(
     navController = navController,
@@ -61,6 +64,7 @@ fun SpywareCheckApp() {
 
     composable(Routes.QUICK_CHECK) {
       QuickCheckScreen(
+        vm = quickCheckVm,
         onBack = goBack,
         onDone = { navController.navigate(Routes.RESULT) },
         onQuickExit = quickExit,
@@ -69,6 +73,7 @@ fun SpywareCheckApp() {
 
     composable(Routes.RESULT) {
       ResultScreen(
+        vm = quickCheckVm,
         onBack = goBack,
         onStartScanGated = { navController.navigate(Routes.SAFETY_GATE) },
         onQuickExit = quickExit,

@@ -3,7 +3,7 @@ package com.deliamo.spywarecheck.domain.quickcheck
 import com.deliamo.spywarecheck.domain.model.*
 
 object QuickCheckScoring {
-    private fun evaluate(answers: Map<String, QuickAnswer>): QuickCheckResult {
+    fun evaluate(answers: Map<String, QuickAnswer>): QuickCheckResult {
         val score: Int = answers.values.fold(0) { acc, answer ->
             acc + when (answer) {
                 QuickAnswer.YES -> 2

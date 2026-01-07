@@ -28,7 +28,7 @@ fun ResultScreen(
     onBack: () -> Unit,
     onQuickExit: () -> Unit,
     onStartScanGated: () -> Unit,
-    vm: QuickCheckViewModel = viewModel()
+    vm: QuickCheckViewModel
 ) {
     val result: QuickCheckResult = remember { vm.buildResult() }
     AppScaffold(

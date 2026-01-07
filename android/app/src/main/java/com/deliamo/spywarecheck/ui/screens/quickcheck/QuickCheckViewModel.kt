@@ -3,6 +3,7 @@ package com.deliamo.spywarecheck.ui.screens.quickcheck
 import androidx.lifecycle.ViewModel
 import com.deliamo.spywarecheck.domain.model.*
 import com.deliamo.spywarecheck.domain.quickcheck.QuickCheckQuestions
+import com.deliamo.spywarecheck.domain.quickcheck.QuickCheckScoring
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -55,9 +56,5 @@ class QuickCheckViewModel: ViewModel() {
         return moved
     }
 
-    fun isCurrendAnswered(): Boolean {
-        val state = _ui.value
-        val q = state.currentQuestion ?: return false
-        return state.answers.containsKey(q.id)
-    }
+    fun buildResult() = QuickCheckScoring.evaluate(_ui.value.answers)
 }

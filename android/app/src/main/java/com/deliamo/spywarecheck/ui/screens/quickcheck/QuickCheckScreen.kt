@@ -36,7 +36,7 @@ fun QuickCheckScreen(
     onBack: () -> Unit,
     onDone: () -> Unit,
     onQuickExit: () -> Unit,
-    vm: QuickCheckViewModel = viewModel()
+    vm: QuickCheckViewModel
 ) {
     val ui by vm.ui.collectAsState()
 
