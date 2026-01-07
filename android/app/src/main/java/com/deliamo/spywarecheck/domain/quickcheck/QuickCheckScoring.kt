@@ -13,8 +13,8 @@ object QuickCheckScoring {
         }
 
         val risk = when {
-            score >= 10 -> QuickRisk.HIGH
-            score >= 5 -> QuickRisk.MEDIUM
+            score >= 7 -> QuickRisk.HIGH
+            score >= 2 -> QuickRisk.MEDIUM
             else -> QuickRisk.LOW
         }
 
