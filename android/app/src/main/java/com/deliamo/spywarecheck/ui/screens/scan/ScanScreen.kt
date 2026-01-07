@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.deliamo.spywarecheck.ui.components.AppScaffold
+import com.deliamo.spywarecheck.ui.screens.scan.ScanTransparencyCard
 import com.deliamo.spywarecheck.ui.screens.scan.ScanUiState
 import com.deliamo.spywarecheck.ui.screens.scan.ScanViewModel
 
@@ -55,6 +56,8 @@ fun ScanScreen(
                         text = "Der Scan prüft lokale Anzeichen auf dem Gerät.",
                         style = MaterialTheme.typography.bodyMedium
                     )
+
+                    ScanTransparencyCard(modifier = Modifier.fillMaxWidth())
 
                     Spacer(Modifier.height(8.dp))
 
