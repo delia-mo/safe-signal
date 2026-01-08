@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
@@ -49,7 +51,8 @@ fun ScanScreen(
         Column(
             modifier = Modifier
                 .padding(padding)
-                .padding(16.dp),
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             when (val s = state) {
@@ -113,7 +116,8 @@ fun ScanScreen(
                     // Show affected apps inline
                     if (findingsCount > 0) {
                         HorizontalDivider()
-                        s.result.findings.take(3).forEach { f ->
+                        // s.result.findings.take(3).forEach { f ->
+                        s.result.findings.forEach { f -> // TODO only show highest risk level
                             Text(f.title, style = MaterialTheme.typography.titleSmall)
                             Text(f.summary, style = MaterialTheme.typography.bodySmall)
                             if (f.affectedApps.isNotEmpty()) {
