@@ -126,6 +126,12 @@ fun ScanScreen(
                                     style = MaterialTheme.typography.bodySmall
                                 )
                             }
+                            if (f.details.isNotEmpty()) {
+                                Text(
+                                    text = "Details: " + f.details.joinToString(),
+                                    style = MaterialTheme.typography.bodySmall
+                                )
+                            }
                             Spacer(Modifier.height(8.dp))
                         }
                     }
