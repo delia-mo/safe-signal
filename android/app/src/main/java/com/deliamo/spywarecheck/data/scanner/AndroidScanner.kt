@@ -1,9 +1,8 @@
 package com.deliamo.spywarecheck.data.scanner
 
-import android.accessibilityservice.AccessibilityServiceInfo
+import android.app.AppOpsManager
 import android.app.admin.DevicePolicyManager
 import android.content.ComponentName
-import android.view.accessibility.AccessibilityManager
 import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
@@ -11,11 +10,13 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Build
 import android.provider.Settings
+import androidx.annotation.RequiresApi
 import com.deliamo.spywarecheck.domain.model.ScanFinding
 import com.deliamo.spywarecheck.domain.model.ScanResult
 import com.deliamo.spywarecheck.domain.model.Severity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import android.Manifest
 
 class AndroidScanner(
     private val context: Context
@@ -140,10 +141,13 @@ class AndroidScanner(
         return when {
             !receiverLabel.isNullOrBlank() && receiverLabel != appLabel ->
                 "$receiverLabel ($appLabel)"
+
             !receiverLabel.isNullOrBlank() ->
                 "$receiverLabel (${cn.packageName})"
+
             !appLabel.isNullOrBlank() ->
                 "$appLabel (${cn.packageName}"
+
             else ->
                 cn.flattenToString()
         }
@@ -171,33 +175,27 @@ class AndroidScanner(
             val result = mutableListOf<String>()
 
             for (pi in packages) {
+                val ai = pi.applicationInfo ?: continue
                 val pkg = pi.packageName
-                if (isSystemApp(pi.applicationInfo)) continue
 
-                val hasFineGranted = pm.checkPermission(
-                    android.Manifest.permission.ACCESS_FINE_LOCATION,
-                    pkg
-                ) == PackageManager.PERMISSION_GRANTED
-                val hasCoarseGranted = pm.checkPermission(
-                    android.Manifest.permission.ACCESS_COARSE_LOCATION,
-                    pkg
-                ) == PackageManager.PERMISSION_GRANTED
+                val hasFine = pm.checkPermission(Manifest.permission.ACCESS_FINE_LOCATION, pkg) ==
+                        PackageManager.PERMISSION_GRANTED
+                val hasCoarse = pm.checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION,pkg) ==
+                        PackageManager.PERMISSION_GRANTED
 
-                if (!hasFineGranted && !hasCoarseGranted) continue
+                if (!hasFine && !hasCoarse) continue
 
-                val hasBackgroundGranted =
+                val hasBackground =
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        pm.checkPermission(
-                            android.Manifest.permission.ACCESS_BACKGROUND_LOCATION,
-                            pkg
-                        ) == PackageManager.PERMISSION_GRANTED
+                        pm.checkPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION, pkg) ==
+                                PackageManager.PERMISSION_GRANTED
                     } else {
-                        // Pre Android 10 there was no separate background permission
+                        // Pre Android 10: no separate background permission
                         true
                     }
-
-                if (hasBackgroundGranted) {
-                    appLabel(pm, pkg)?.let { result += it }
+                if (hasBackground) {
+                    val label = appLabel(pm, pkg) ?: pkg
+                    result += label
                 }
             }
             result.distinct().sorted()
@@ -205,6 +203,15 @@ class AndroidScanner(
             emptyList()
         }
     }
+
+    private fun isAllowedOrForeground(mode: Int): Boolean {
+        // MODE_ALLOWED exists on all; MODE_FOREGROUND is API 29+
+        return mode == AppOpsManager.MODE_ALLOWED ||
+                (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && isForegroundMode(mode))
+    }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private fun isForegroundMode(mode: Int): Boolean = mode == AppOpsManager.MODE_FOREGROUND
 
     private fun getSuspiciousNameApps(pm: PackageManager): List<String> {
         val keywords = listOf(
