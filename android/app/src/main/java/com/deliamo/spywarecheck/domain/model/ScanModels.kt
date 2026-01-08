@@ -14,3 +14,9 @@ data class ScanResult(
     val timestampMills: Long,
     val findings: List<ScanFinding>
 )
+
+data class AppRef(
+    val packageName: String,
+    val label: String,
+    val isSystem: Boolean
+)

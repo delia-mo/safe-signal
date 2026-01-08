@@ -17,6 +17,7 @@ import com.deliamo.spywarecheck.domain.model.Severity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import android.Manifest
+import com.deliamo.spywarecheck.domain.model.AppRef
 
 class AndroidScanner(
     private val context: Context
@@ -170,48 +171,50 @@ class AndroidScanner(
     }
 
     private fun getAppsWithBackgroundLocation(pm: PackageManager): List<String> {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return emptyList()
         return try {
             val packages = getInstalledPackagesWithPermissions(pm)
-            val result = mutableListOf<String>()
+            val collected = mutableListOf<AppRef>()
 
             for (pi in packages) {
                 val ai = pi.applicationInfo ?: continue
                 val pkg = pi.packageName
+                val label = appLabel(pm, pkg) ?: pkg
+                val isSystem = isSystemApp(ai)
 
                 val hasFine = pm.checkPermission(Manifest.permission.ACCESS_FINE_LOCATION, pkg) ==
                         PackageManager.PERMISSION_GRANTED
-                val hasCoarse = pm.checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION,pkg) ==
-                        PackageManager.PERMISSION_GRANTED
+                val hasCoarse =
+                    pm.checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION, pkg) ==
+                            PackageManager.PERMISSION_GRANTED
 
                 if (!hasFine && !hasCoarse) continue
 
                 val hasBackground =
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        pm.checkPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION, pkg) ==
-                                PackageManager.PERMISSION_GRANTED
-                    } else {
-                        // Pre Android 10: no separate background permission
-                        true
-                    }
-                if (hasBackground) {
-                    val label = appLabel(pm, pkg) ?: pkg
-                    result += label
-                }
+                    pm.checkPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION, pkg) ==
+                            PackageManager.PERMISSION_GRANTED
+
+                if (!hasBackground) continue
+
+                collected += AppRef(packageName = pkg, label = label, isSystem = isSystem)
             }
-            result.distinct().sorted()
+            val filtered = filterAppsForDisplay(collected)
+            return filtered
+                .map { it.label }
+                .distinct()
+                .sorted()
         } catch (_: Throwable) {
             emptyList()
         }
     }
 
-    private fun isAllowedOrForeground(mode: Int): Boolean {
-        // MODE_ALLOWED exists on all; MODE_FOREGROUND is API 29+
-        return mode == AppOpsManager.MODE_ALLOWED ||
-                (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && isForegroundMode(mode))
+    private fun filterAppsForDisplay(apps: List<AppRef>): List<AppRef> {
+        return apps.filter { app ->
+            if (!app.isSystem) return@filter true
+            RiskySystemPolicy.shouldShowSystemApp(app.packageName, app.label)
+        }
     }
 
-    @RequiresApi(Build.VERSION_CODES.Q)
-    private fun isForegroundMode(mode: Int): Boolean = mode == AppOpsManager.MODE_FOREGROUND
 
     private fun getSuspiciousNameApps(pm: PackageManager): List<String> {
         val keywords = listOf(
