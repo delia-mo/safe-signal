@@ -73,6 +73,30 @@ class AndroidScanner(
             )
         }
 
+        // Root detection
+        val rootedSignal = RootCheck.detectRootSignals()
+        val rootManagers = RootManagerAppCheck.findInstalledRootManagers(pm)
+        if(rootManagers.isNotEmpty() || rootedSignal.isRootLikely) {
+            val severity = when {
+                rootManagers.isNotEmpty() && rootedSignal.isRootLikely -> Severity.HIGH
+                else -> Severity.MEDIUM
+            }
+
+            val reasons = buildList {
+                if (rootManagers.isNotEmpty()) add("Root Tools gefunden: ${rootManagers.joinToString()}}.")
+                addAll(rootedSignal.reasons)
+            }
+            findings += ScanFinding(
+                id = "root_detected",
+                title = "Hinweis: Dein Gerät könnte gerootet sein",
+                summary = "Root kann Überwachungs-Apps mehr Möglichkeiten geben. " +
+                        "Wenn du Root nicht bewusst eingerichtet hast, ist das ein stärkeres Warnsignal.",
+                severity = severity,
+                affectedApps = rootManagers,
+                details = reasons
+            )
+        }
+
         // Suspicious app names
         val suspiciousNameApps = getSuspiciousNameApps(pm)
         if (suspiciousNameApps.isNotEmpty()) {
