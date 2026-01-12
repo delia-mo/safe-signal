@@ -1,4 +1,3 @@
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -22,8 +21,17 @@ android {
     }
 
     buildTypes {
-        release {
+        getByName("debug") {
+            // This is your default debug build
             isMinifyEnabled = false
+        }
+
+        getByName("release") {
+            // FIX: This line lets you run the release variant on your phone
+            // by using the same "fake" key the debug build uses.
+            signingConfig = signingConfigs.getByName("debug")
+
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
