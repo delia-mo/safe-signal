@@ -95,18 +95,6 @@ class AndroidScanner(
             )
         }
 
-        // Suspicious app names
-        val suspiciousNameApps = getSuspiciousNameApps(pm)
-        if (suspiciousNameApps.isNotEmpty()) {
-            findings += ScanFinding(
-                id = "suspicious_app_names",
-                title = "Apps mit ungewöhnlichen Namen",
-                summary = "Einige Apps wirken vom Namen her auffällig. Das ist kein Beweis. Prüfe, ob du sie kennst.",
-                severity = Severity.LOW,
-                affectedApps = suspiciousNameApps
-            )
-        }
-
         ScanResult(
             timestampMills = System.currentTimeMillis(),
             findings = findings
