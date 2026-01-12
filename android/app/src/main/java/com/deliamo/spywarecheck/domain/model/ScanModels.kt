@@ -28,3 +28,7 @@ data class RootSignal(
     val isRootLikely: Boolean,
     val reasons: List<String>
 )
+
+interface RootDetector {
+    fun detect(): RootSignal
+}
