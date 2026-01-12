@@ -1,4 +1,4 @@
-package com.deliamo.spywarecheck.ui.screens.start
+package com.deliamo.spywarecheck.ui.screens.safetygate
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row

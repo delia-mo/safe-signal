@@ -1,4 +1,4 @@
-package com.deliamo.spywarecheck.ui.screens.start
+package com.deliamo.spywarecheck.ui.screens.finding
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -7,10 +7,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.deliamo.spywarecheck.ui.components.AppScaffold
-import com.deliamo.spywarecheck.ui.util.quickExitToBrowser
 
 @Composable
 fun FindingDetailScreen(

@@ -1,4 +1,4 @@
-package com.deliamo.spywarecheck.ui.screens.start
+package com.deliamo.spywarecheck.ui.screens.scan
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,10 +25,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.deliamo.spywarecheck.ui.components.AppScaffold
-import com.deliamo.spywarecheck.ui.screens.scan.ScanTransparencyCard
-import com.deliamo.spywarecheck.ui.screens.scan.ScanUiState
-import com.deliamo.spywarecheck.ui.screens.scan.ScanViewModel
-import com.squareup.wire.internal.countNonNull
 
 @Composable
 fun ScanScreen(

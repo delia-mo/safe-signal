@@ -1,9 +1,8 @@
-package com.deliamo.spywarecheck.ui.screens.start
+package com.deliamo.spywarecheck.ui.screens.quickcheck
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,10 +25,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.deliamo.spywarecheck.domain.model.QuickAnswer
 import com.deliamo.spywarecheck.ui.components.AppScaffold
-import com.deliamo.spywarecheck.ui.screens.quickcheck.QuickCheckViewModel
 
 @Composable
 fun QuickCheckScreen(
