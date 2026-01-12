@@ -1,16 +1,20 @@
 package com.deliamo.spywarecheck.data.scanner
 
+import com.deliamo.spywarecheck.domain.model.RootDetector
 import com.deliamo.spywarecheck.domain.model.RootSignal
 import java.io.File
 
-object RootCheck {
+class RealRootDetector : RootDetector {
 
-    fun detectRootSignals(): RootSignal {
+    override fun detect(): RootSignal {
         val reasons = mutableListOf<String>()
-        val tags = android.os.Build.TAGS
-        if (hasTestKeys()) { reasons += "System wirkt modifiziert (test-keys)" }
-        if (hasSuBinary()) { reasons += "su-Datei gefunden" }
+
+        if (hasTestKeys()) reasons += "System wirkt modifiziert (test-keys)"
+
+        if (hasSuBinary())  reasons += "su-Datei gefunden"
+
         if (canFindSuWithWhich()) reasons += "su ist im Systempfad auffindbar."
+
         return RootSignal(
             isRootLikely = reasons.isNotEmpty(),
             reasons = reasons

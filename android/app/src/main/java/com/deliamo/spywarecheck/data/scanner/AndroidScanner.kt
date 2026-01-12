@@ -1,6 +1,5 @@
 package com.deliamo.spywarecheck.data.scanner
 
-import android.app.AppOpsManager
 import android.app.admin.DevicePolicyManager
 import android.content.ComponentName
 import android.content.Context
@@ -10,7 +9,6 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Build
 import android.provider.Settings
-import androidx.annotation.RequiresApi
 import com.deliamo.spywarecheck.domain.model.ScanFinding
 import com.deliamo.spywarecheck.domain.model.ScanResult
 import com.deliamo.spywarecheck.domain.model.Severity
@@ -74,7 +72,7 @@ class AndroidScanner(
         }
 
         // Root detection
-        val rootedSignal = RootCheck.detectRootSignals()
+        val rootedSignal = ScannerServices.rootDetector().detect()
         val rootManagers = RootManagerAppCheck.findInstalledRootManagers(pm)
         if(rootManagers.isNotEmpty() || rootedSignal.isRootLikely) {
             val severity = when {
