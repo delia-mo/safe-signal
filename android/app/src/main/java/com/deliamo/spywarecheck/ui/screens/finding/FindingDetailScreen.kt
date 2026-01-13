@@ -9,11 +9,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.deliamo.spywarecheck.ui.components.AppScaffold
+import com.deliamo.spywarecheck.ui.screens.scan.ScanViewModel
 
 @Composable
 fun FindingDetailScreen(
+    findingId: String,
     onBack: () -> Unit,
-    onQuickExit: () -> Unit
+    onQuickExit: () -> Unit,
+    vm: ScanViewModel
 ) {
 
     AppScaffold(
