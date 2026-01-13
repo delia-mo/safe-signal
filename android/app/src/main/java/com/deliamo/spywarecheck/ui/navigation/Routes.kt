@@ -6,5 +6,8 @@ object Routes {
     const val RESULT = "result"
     const val SAFETY_GATE = "safety_gate"
     const val SCAN = "scan"
-    const val FINDING = "finding"
+
+    const val FINDING_DETAIL = "finding/{findingId}"
+
+    fun findingDetail(findingId: String) = "finding/$findingId"
 }
