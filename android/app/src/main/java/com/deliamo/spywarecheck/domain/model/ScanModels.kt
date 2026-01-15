@@ -1,7 +1,5 @@
 package com.deliamo.spywarecheck.domain.model
 
-import android.telephony.ims.SipDetails
-
 enum class Severity { LOW, MEDIUM, HIGH }
 
 data class ScanFinding(
@@ -10,6 +8,7 @@ data class ScanFinding(
     val summary: String,
     val severity: Severity,
     val affectedApps: List<String> = emptyList(),
+    val affectedPackages: List<String> = emptyList(),
     val details: List<String> = emptyList()
 )
 
@@ -20,9 +19,20 @@ data class ScanResult(
 
 data class AppRef(
     val packageName: String,
-    val label: String,
+    val appLabel: String? = null,
+    val receiverLabel: String? = null,
     val isSystem: Boolean
-)
+) {
+    fun displayName(): String {
+        return when {
+            !receiverLabel.isNullOrBlank() && !appLabel.isNullOrBlank() && receiverLabel != appLabel ->
+                "$receiverLabel ($appLabel)"
+            !receiverLabel.isNullOrBlank() -> "$receiverLabel ($packageName)"
+            !appLabel.isNullOrBlank() -> "$appLabel ($packageName)"
+            else -> packageName
+        }
+    }
+}
 
 data class RootSignal(
     val isRootLikely: Boolean,

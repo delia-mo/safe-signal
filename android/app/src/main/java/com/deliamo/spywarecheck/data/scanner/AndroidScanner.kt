@@ -37,14 +37,15 @@ class AndroidScanner(
         }
 
         // Device admin enabled + apps
-        val deviceAdminApps = getActiveDeviceAdminApps(pm)
+        val deviceAdminApps = getActiveDeviceAdminLabels(pm)
         if (deviceAdminApps.isNotEmpty()) {
             findings += ScanFinding(
                 id = "device_admin_enabled",
                 title = "Geräteadministrator-Rechte sind aktiv",
                 summary = "Apps mit Geräteadministrator-Rechten können schwer zu entfernen sein.",//TODO überarbeiten
                 severity = Severity.HIGH,
-                affectedApps = deviceAdminApps
+                affectedApps = deviceAdminApps,
+                affectedPackages = getActiveDeviceAdminPackages(pm)
             )
         }
 
@@ -60,21 +61,22 @@ class AndroidScanner(
         }
 
         // Apps with background location access
-        val backgroundLocationApps = getAppsWithBackgroundLocation(pm)
+        val backgroundLocationApps = getAppsWithBackgroundLocationLabels(pm)
         if (backgroundLocationApps.isNotEmpty()) {
             findings += ScanFinding(
                 id = "background_location_apps",
                 title = "Apps mit dauerhaftem Standortzugriff",
                 summary = "Diese Apps dürfen auch im Hintergrund auf deinen Standort zugreifen.",
                 severity = Severity.MEDIUM,
-                affectedApps = backgroundLocationApps
+                affectedApps = backgroundLocationApps,
+                affectedPackages = getAppsWithBackgroundLocationPackages(pm)
             )
         }
 
         // Root detection
         val rootedSignal = ScannerServices.rootDetector().detect()
         val rootManagers = RootManagerAppCheck.findInstalledRootManagers(pm)
-        if(rootManagers.isNotEmpty() || rootedSignal.isRootLikely) {
+        if (rootManagers.isNotEmpty() || rootedSignal.isRootLikely) {
             val severity = when {
                 rootManagers.isNotEmpty() && rootedSignal.isRootLikely -> Severity.HIGH
                 else -> Severity.MEDIUM
@@ -117,7 +119,9 @@ class AndroidScanner(
 
             val services = setting.split(':')
                 .mapNotNull { ComponentName.unflattenFromString(it) }
-            services.map { cn -> resolveDeviceAdminLabel(pm, cn) }
+
+            val refs = services.map { resolveDeviceAdminLabel(pm, it) }
+            refs.map { it.displayName() }
                 .distinct()
                 .sorted()
         } catch (_: Throwable) {
@@ -125,20 +129,24 @@ class AndroidScanner(
         }
     }
 
-    private fun getActiveDeviceAdminApps(pm: PackageManager): List<String> {
-        return try {
+    private fun getActiveDeviceAdminRefs(pm: PackageManager): List<AppRef> {
+        return runCatching {
             val dpm = context.getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
-            val admins = dpm.activeAdmins ?: return emptyList()
+            val admins = dpm.activeAdmins.orEmpty()
 
-            admins.map { cn -> resolveDeviceAdminLabel(pm, cn) }
-                .distinct()
-                .sorted()
-        } catch (_: Throwable) {
-            emptyList()
-        }
+            admins
+                .map { cn -> resolveDeviceAdminLabel(pm, cn) }
+                .sortedBy { it.displayName().lowercase() }
+        }.getOrElse { emptyList() }
     }
 
-    private fun resolveDeviceAdminLabel(pm: PackageManager, cn: ComponentName): String {
+    private fun getActiveDeviceAdminPackages(pm: PackageManager): List<String> =
+        getActiveDeviceAdminRefs(pm).map { it.packageName }
+
+    private fun getActiveDeviceAdminLabels(pm: PackageManager): List<String> =
+        getActiveDeviceAdminRefs(pm).map { it.displayName() }
+
+    private fun resolveDeviceAdminLabel(pm: PackageManager, cn: ComponentName): AppRef {
         val receiverLabel = try {
             val ri = pm.getReceiverInfo(cn, PackageManager.GET_META_DATA)
             ri.loadLabel(pm)?.toString()
@@ -148,20 +156,12 @@ class AndroidScanner(
 
         val appLabel = appLabel(pm, cn.packageName)
 
-        // For multiple admins belonging to the same app/package
-        return when {
-            !receiverLabel.isNullOrBlank() && receiverLabel != appLabel ->
-                "$receiverLabel ($appLabel)"
-
-            !receiverLabel.isNullOrBlank() ->
-                "$receiverLabel (${cn.packageName})"
-
-            !appLabel.isNullOrBlank() ->
-                "$appLabel (${cn.packageName}"
-
-            else ->
-                cn.flattenToString()
-        }
+        return AppRef(
+            packageName = cn.packageName,
+            appLabel = appLabel,
+            receiverLabel = receiverLabel,
+            isSystem = false
+        )
     }
 
     private fun isLocationEnabled(): Boolean {
@@ -180,9 +180,9 @@ class AndroidScanner(
         }
     }
 
-    private fun getAppsWithBackgroundLocation(pm: PackageManager): List<String> {
+    private fun getBackgroundLocationRefs(pm: PackageManager): List<AppRef> {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return emptyList()
-        return try {
+        return runCatching {
             val packages = getInstalledPackagesWithPermissions(pm)
             val collected = mutableListOf<AppRef>()
 
@@ -206,53 +206,31 @@ class AndroidScanner(
 
                 if (!hasBackground) continue
 
-                collected += AppRef(packageName = pkg, label = label, isSystem = isSystem)
+                collected += AppRef(packageName = pkg, appLabel = label, isSystem = isSystem)
             }
-            val filtered = filterAppsForDisplay(collected)
-            return filtered
-                .map { it.label }
-                .distinct()
-                .sorted()
-        } catch (_: Throwable) {
-            emptyList()
-        }
+            filterAppsForDisplay(collected)
+        }.getOrElse { emptyList() }
     }
+
+    private fun getAppsWithBackgroundLocationLabels(pm: PackageManager): List<String> {
+        return getBackgroundLocationRefs(pm)
+            .map { it.displayName() }
+            .distinct()
+            .sorted()
+    }
+
+    private fun getAppsWithBackgroundLocationPackages(pm: PackageManager): List<String> {
+        return getBackgroundLocationRefs(pm)
+            .map { it.packageName }
+            .distinct()
+            .sorted()
+    }
+
 
     private fun filterAppsForDisplay(apps: List<AppRef>): List<AppRef> {
         return apps.filter { app ->
             if (!app.isSystem) return@filter true
-            RiskySystemPolicy.shouldShowSystemApp(app.packageName, app.label)
-        }
-    }
-
-
-    private fun getSuspiciousNameApps(pm: PackageManager): List<String> {
-        val keywords = listOf(
-            "update", "service", "sync", "system", "device", "helper", "support", "security"
-        )
-
-        return try {
-            val packages = getInstalledPackagesWithPermissions(pm)
-            val result = mutableListOf<String>()
-
-            for (pi in packages) {
-                val pkg = pi.packageName
-                if (isSystemApp(pi.applicationInfo)) continue
-
-                val label = appLabel(pm, pkg) ?: continue
-                val lower = label.lowercase()
-
-                val looksGeneric = keywords.any { kw -> lower.contains(kw) }
-                val veryShort = label.length <= 3
-
-                if (looksGeneric || veryShort) {
-                    result += label
-                }
-            }
-
-            result.distinct().sorted()
-        } catch (_: Throwable) {
-            emptyList()
+            RiskySystemPolicy.shouldShowSystemApp(app.packageName, app.appLabel)
         }
     }
 
