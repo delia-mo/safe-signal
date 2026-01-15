@@ -37,7 +37,6 @@ fun FindingDetailScreen(
 ) {
     val context = LocalContext.current
     val state by vm.state.collectAsState()
-    val decodedId = Uri.decode(findingId)
 
     val finding = when (val s = state) {
         is ScanUiState.Done -> s.result.findings.firstOrNull { it.id == findingId }
@@ -83,13 +82,6 @@ fun FindingDetailScreen(
 
             // TODO Maßnahmen
             HorizontalDivider()
-
-            val decodedId = Uri.decode(findingId)
-
-            LaunchedEffect(findingId, state) {
-                val available = (state as? ScanUiState.Done)?.result?.findings?.joinToString { it.id } ?: "no-done"
-                Log.d("NBA", "argId=$findingId decodedId=$decodedId availableIds=$available")
-            }
 
             Text("Nächste Schritte", style = MaterialTheme.typography.titleMedium)
             Button(

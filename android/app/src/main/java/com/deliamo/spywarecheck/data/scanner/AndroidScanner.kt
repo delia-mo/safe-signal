@@ -15,6 +15,7 @@ import com.deliamo.spywarecheck.domain.model.Severity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import android.Manifest
+import com.deliamo.spywarecheck.domain.model.AdminEntry
 import com.deliamo.spywarecheck.domain.model.AppRef
 
 class AndroidScanner(
@@ -37,15 +38,16 @@ class AndroidScanner(
         }
 
         // Device admin enabled + apps
-        val deviceAdminApps = getActiveDeviceAdminLabels(pm)
-        if (deviceAdminApps.isNotEmpty()) {
+        val adminEntries = getActiveDeviceAdminEntries(pm)
+        if (adminEntries.isNotEmpty()) {
             findings += ScanFinding(
                 id = "device_admin_enabled",
                 title = "Geräteadministrator-Rechte sind aktiv",
                 summary = "Apps mit Geräteadministrator-Rechten können schwer zu entfernen sein.",//TODO überarbeiten
                 severity = Severity.HIGH,
-                affectedApps = deviceAdminApps,
-                affectedPackages = getActiveDeviceAdminPackages(pm)
+                affectedApps = adminEntries.map { it.receiverLabel },
+                affectedPackages = adminEntries.map{it.adminPackage},
+                adminEntries = adminEntries
             )
         }
 
@@ -163,6 +165,37 @@ class AndroidScanner(
             isSystem = false
         )
     }
+
+    private fun getActiveDeviceAdminEntries(pm: PackageManager): List<AdminEntry> {
+        return runCatching {
+            val dpm = context.getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
+            val admins = dpm.activeAdmins.orEmpty()
+
+            admins.map { cn ->
+                val receiverLabel = try {
+                    val ri = pm.getReceiverInfo(cn, PackageManager.GET_META_DATA)
+                    ri.loadLabel(pm)?.toString()
+                } catch (_: Throwable) {
+                    null
+                }
+
+                val appLabel = appLabel(pm, cn.packageName)
+
+                val best = when {
+                    !receiverLabel.isNullOrBlank() -> receiverLabel
+                    !appLabel.isNullOrBlank() -> appLabel
+                    else -> cn.className ?: cn.packageName
+                }
+
+                AdminEntry(
+                    receiverLabel = best,
+                    adminPackage = cn.packageName,
+                    componentFlattened = cn.flattenToString()
+                )
+            }
+        }.getOrElse { emptyList() }
+    }
+
 
     private fun isLocationEnabled(): Boolean {
         return try {

@@ -9,7 +9,14 @@ data class ScanFinding(
     val severity: Severity,
     val affectedApps: List<String> = emptyList(),
     val affectedPackages: List<String> = emptyList(),
-    val details: List<String> = emptyList()
+    val details: List<String> = emptyList(),
+    val adminEntries: List<AdminEntry> = emptyList()
+)
+
+data class AdminEntry(
+    val receiverLabel: String,
+    val adminPackage: String,
+    val componentFlattened: String
 )
 
 data class ScanResult(

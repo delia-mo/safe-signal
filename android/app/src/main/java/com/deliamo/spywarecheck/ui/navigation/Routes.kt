@@ -1,6 +1,7 @@
 package com.deliamo.spywarecheck.ui.navigation
 
 import android.net.Uri
+import kotlinx.coroutines.flow.flow
 
 object Routes {
     const val START = "start"
@@ -12,4 +13,6 @@ object Routes {
     fun findingDetail(findingId: String) = "finding/$findingId"
     const val ACTION_FLOW = "actions/{flowId}"
     fun actionFlow(flowId: String) = "actions/${Uri.encode(flowId)}"
+    const val ACTION_FLOW_STEP = "actions/{flowId}/{step}"
+    fun actionFlowStep(flowId: String, step: Int) = "actions/${Uri.encode(flowId)}/$step"
 }

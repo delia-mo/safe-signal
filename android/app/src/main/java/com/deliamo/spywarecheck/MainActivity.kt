@@ -13,6 +13,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.deliamo.spywarecheck.ui.actions.ActionFlowStubScreen
+import com.deliamo.spywarecheck.ui.actions.DeviceAdminRemovalFlowScreen
 import com.deliamo.spywarecheck.ui.navigation.Routes
 import com.deliamo.spywarecheck.ui.screens.quickcheck.QuickCheckViewModel
 import com.deliamo.spywarecheck.ui.screens.finding.FindingDetailScreen
@@ -120,7 +121,7 @@ fun SpywareCheckApp() {
                 onBack = { navController.popBackStack() },
                 onQuickExit = quickExit,
                 onOpenActionFlow = { flowId ->
-                    navController.navigate(Routes.actionFlow(flowId))
+                    navController.navigate(Routes.actionFlowStep(flowId, 0))
                 },
                 vm = scanVm
             )
@@ -135,6 +136,29 @@ fun SpywareCheckApp() {
                 flowId = flowId,
                 onBack = { navController.popBackStack() },
                 onQuickExit = quickExit
+            )
+        }
+
+        composable(
+            route = Routes.ACTION_FLOW_STEP,
+            arguments = listOf(
+                navArgument("flowId") { type = NavType.StringType },
+                navArgument("step") { type = NavType.IntType}
+            )
+        ) { entry ->
+            val flowId = entry.arguments?.getString("flowId") ?: ""
+            val step = entry.arguments?.getInt("step") ?: 0
+
+            DeviceAdminRemovalFlowScreen(
+                flowId = flowId,
+                step = step,
+                onBack = { navController.popBackStack() },
+                onQuickExit = quickExit,
+                onNavigateStep = { nextStep ->
+                    navController.navigate(Routes.actionFlowStep(flowId, nextStep))
+                },
+                onFinish = { navController.popBackStack() },
+                scanVm = scanVm
             )
         }
 

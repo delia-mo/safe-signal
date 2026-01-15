@@ -14,10 +14,14 @@ object NextBestActionRegistry {
                 )
 
             "device_admin_enabled" ->
-                when(finding.affectedPackages.size) {
-                    1 -> NextBestAction.OpenAppDetails("App prüfen", finding.affectedPackages.first())
-                    else -> NextBestAction.ChooseApp("Apps prüfen", flowId = finding.id)
-                }
+                NextBestAction.OpenActionFlow(
+                    label = "Sicher entfernen (Schritte ansehen)",
+                    flowId = finding.id
+                )
+//                when(finding.affectedPackages.size) {
+//                    1 -> NextBestAction.OpenAppDetails("App prüfen", finding.affectedPackages.first())
+//                    else -> NextBestAction.ChooseApp("Apps prüfen", flowId = finding.id)
+//                }
 
             // MEDIUM
             "background_location_apps" ->
