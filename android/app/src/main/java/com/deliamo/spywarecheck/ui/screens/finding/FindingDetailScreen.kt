@@ -1,11 +1,15 @@
 package com.deliamo.spywarecheck.ui.screens.finding
 
+import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -14,7 +18,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.deliamo.spywarecheck.ui.actions.NextBestActionLauncher
+import com.deliamo.spywarecheck.ui.actions.NextBestActionRegistry
 import com.deliamo.spywarecheck.ui.components.AppScaffold
 import com.deliamo.spywarecheck.ui.components.SeverityChip
 import com.deliamo.spywarecheck.ui.screens.scan.ScanUiState
@@ -25,17 +32,17 @@ fun FindingDetailScreen(
     findingId: String,
     onBack: () -> Unit,
     onQuickExit: () -> Unit,
+    onOpenActionFlow: (String) -> Unit,
     vm: ScanViewModel
 ) {
-
+    val context = LocalContext.current
     val state by vm.state.collectAsState()
+    val decodedId = Uri.decode(findingId)
 
     val finding = when (val s = state) {
         is ScanUiState.Done -> s.result.findings.firstOrNull { it.id == findingId }
         else -> null
     }
-
-
     AppScaffold(
         title = "Details",
         onQuickExit = onQuickExit,
@@ -53,6 +60,8 @@ fun FindingDetailScreen(
                 Text("Kein Detail gefunden.", style = MaterialTheme.typography.bodyMedium)
                 return@Column
             }
+
+            val action = NextBestActionRegistry.forFindingId(finding)
 
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 SeverityChip(finding.severity)
@@ -75,11 +84,24 @@ fun FindingDetailScreen(
             // TODO Maßnahmen
             HorizontalDivider()
 
+            val decodedId = Uri.decode(findingId)
+
+            LaunchedEffect(findingId, state) {
+                val available = (state as? ScanUiState.Done)?.result?.findings?.joinToString { it.id } ?: "no-done"
+                Log.d("NBA", "argId=$findingId decodedId=$decodedId availableIds=$available")
+            }
+
             Text("Nächste Schritte", style = MaterialTheme.typography.titleMedium)
-            Text(
-                text = "Hier kommen passende Maßnahmen rein",
-                style = MaterialTheme.typography.bodySmall
-            )
+            Button(
+                onClick = {
+                    NextBestActionLauncher.handle(
+                        context = context,
+                        action = action,
+                        navigateToFlow = onOpenActionFlow
+                    )
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) { Text(action.label) }
         }
     }
 }

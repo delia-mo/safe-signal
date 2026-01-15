@@ -12,6 +12,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.deliamo.spywarecheck.ui.actions.ActionFlowStubScreen
 import com.deliamo.spywarecheck.ui.navigation.Routes
 import com.deliamo.spywarecheck.ui.screens.quickcheck.QuickCheckViewModel
 import com.deliamo.spywarecheck.ui.screens.finding.FindingDetailScreen
@@ -118,7 +119,22 @@ fun SpywareCheckApp() {
                 findingId = findingId,
                 onBack = { navController.popBackStack() },
                 onQuickExit = quickExit,
+                onOpenActionFlow = { flowId ->
+                    navController.navigate(Routes.actionFlow(flowId))
+                },
                 vm = scanVm
+            )
+        }
+
+        composable(
+            route = Routes.ACTION_FLOW,
+            arguments = listOf(navArgument("flowId") { type = NavType.StringType })
+        ) { entry ->
+            val flowId = entry.arguments?.getString("flowId") ?: ""
+            ActionFlowStubScreen(
+                flowId = flowId,
+                onBack = { navController.popBackStack() },
+                onQuickExit = quickExit
             )
         }
 
