@@ -123,6 +123,7 @@ fun DeviceAdminRemovalFlowScreen(
                 3 -> Step3_Rescan(
                     context = context,
                     scanVm = scanVm,
+                    onBackToStep2 = {  onNavigateStep(1) },
                     onFinish = onFinish
                 )
 
@@ -328,11 +329,41 @@ private fun Step2_OpenAppDetailsAndUninstall(
 private fun Step3_Rescan(
     context: Context,
     scanVm: ScanViewModel,
+    onBackToStep2: () -> Unit,
     onFinish: () -> Unit
 ) {
     val state by scanVm.state.collectAsState()
     val isRunning = state is ScanUiState.Running
-    val isDone = state is ScanUiState.Done
+
+    var waitingForRescan by remember { mutableStateOf(false) }
+    var sawRunning by remember { mutableStateOf(false) }
+    var showOutcome by remember { mutableStateOf(false) }
+
+    val onRescanClick = {
+        showOutcome = false
+        sawRunning = false
+        waitingForRescan = true
+        scanVm.startScan(context = context.applicationContext)
+    }
+
+    var scanButtonText = if (isRunning) "Scan läuft ..." else "Erneut scannen"
+
+    // Only show outcome after rescan triggered
+    LaunchedEffect(state, waitingForRescan) {
+        if(!waitingForRescan) return@LaunchedEffect
+        when(state) {
+            is ScanUiState.Running -> {
+                sawRunning = true
+            }
+            is ScanUiState.Done -> {
+                if (sawRunning) {
+                    showOutcome = true
+                    waitingForRescan = false
+                }
+            }
+            else -> Unit
+        }
+    }
 
     Text(
         text = "Schritt 4/4",
@@ -349,33 +380,72 @@ private fun Step3_Rescan(
 
     Spacer(Modifier.height(8.dp))
 
-    Button(
-        onClick = { scanVm.startScan(context = context.applicationContext) },
-        enabled = !isRunning,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Text(
-            if (isRunning) "Scan läuft ..." else "Erneut scannen"
-        )
+    if (showOutcome) {
+        OutlinedButton(
+            onClick = onRescanClick,
+            enabled = !isRunning,
+            modifier = Modifier.fillMaxWidth()
+        ) { Text(scanButtonText)}
+    }
+    else {
+     Button(
+         onClick = onRescanClick,
+         enabled = !isRunning,
+         modifier = Modifier.fillMaxWidth()
+     ) { Text(scanButtonText) }
     }
 
     if (isRunning) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            CircularProgressIndicator()
-            Text("Bitte kurz warten...", style = MaterialTheme.typography.bodySmall)
+        Spacer(Modifier.height(10.dp))
+        Text("Gerät wird gescannt. Das kann einen Moment dauern.", style = MaterialTheme.typography.bodySmall)
+        Spacer(Modifier.height(6.dp))
+        LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+    }
+
+    if (showOutcome) {
+        val doneState  = state as? ScanUiState.Done
+        val adminStillThere = doneState?.result
+            ?.findings
+            ?.any {it.id == "device_admin_enabled"} == true
+
+        Spacer(Modifier.height(16.dp))
+        HorizontalDivider()
+        Spacer(Modifier.height(12.dp))
+
+        if (adminStillThere) {
+            Text("Noch aktiv", style = MaterialTheme.typography.titleMedium)
+            Text(
+                text = "Die Verwaltungsrechte sind noch nicht ausgeschaltet. Gehe zurück und deaktiviere " +
+                        "den Eintrag in den Einstellungen.\n" +
+                        "Falls du Apps nicht den Zugriff entziehen kannst, wende dich an eine Beratungsstelle.",
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Spacer(Modifier.height(12.dp))
+            Button(
+                onClick = onBackToStep2,
+                modifier = Modifier.fillMaxWidth()
+            ) { Text("Zurück zu Schritt 2") }
+
+            OutlinedButton(
+                onClick = onFinish,
+                modifier = Modifier.fillMaxWidth()
+            ) { Text("Zum normalen Ergebnis") }
+        }
+        else {
+            Text("Geschafft \uD83C\uDF89", style = MaterialTheme.typography.titleMedium)
+            Text(
+                text = "Der Hinweis auf Verwaltungsrechte ist verschwunden. Gut gemacht!",
+                style = MaterialTheme.typography.bodyMedium
+            )
+
+            Spacer(Modifier.height(12.dp))
+
+            Button(
+                onClick = onFinish,
+                modifier = Modifier.fillMaxWidth()
+            ) { Text("Fertig") } // TODO save for export
         }
     }
-
-    if (isDone) {
-        OutlinedButton(
-            onClick = onFinish,
-            modifier = Modifier.fillMaxWidth()
-        ) { Text("Zurück zum Ergebnis") }
-    }
-
-    OutlinedButton(onClick = onFinish, modifier = Modifier.fillMaxWidth()) { Text("Fertig") } // TODO marker, dass abgeschlossen
 }
 
 @Composable

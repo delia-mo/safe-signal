@@ -157,7 +157,7 @@ fun SpywareCheckApp() {
                 onNavigateStep = { nextStep ->
                     navController.navigate(Routes.actionFlowStep(flowId, nextStep))
                 },
-                onFinish = { navController.popBackStack() },
+                onFinish = { navController.navigate(Routes.SCAN) },
                 scanVm = scanVm
             )
         }
