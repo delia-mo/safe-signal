@@ -20,8 +20,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.deliamo.spywarecheck.ui.actions.NextBestActionLauncher
-import com.deliamo.spywarecheck.ui.actions.NextBestActionRegistry
+import com.deliamo.spywarecheck.ui.actions.launcher.NextBestActionLauncher
+import com.deliamo.spywarecheck.ui.actions.registry.NextBestActionRegistry
 import com.deliamo.spywarecheck.ui.components.AppScaffold
 import com.deliamo.spywarecheck.ui.components.SeverityChip
 import com.deliamo.spywarecheck.ui.screens.scan.ScanUiState

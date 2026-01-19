@@ -1,4 +1,4 @@
-package com.deliamo.spywarecheck.ui.actions
+package com.deliamo.spywarecheck.domain.actions
 
 sealed class NextBestAction(open val label: String) {
     data class OpenSettings(

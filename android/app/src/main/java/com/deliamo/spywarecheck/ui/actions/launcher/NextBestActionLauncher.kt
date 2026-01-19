@@ -1,4 +1,4 @@
-package com.deliamo.spywarecheck.ui.actions
+package com.deliamo.spywarecheck.ui.actions.launcher
 
 import android.content.ActivityNotFoundException
 import android.content.Context
@@ -6,6 +6,8 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
 import androidx.core.content.ContextCompat
+import com.deliamo.spywarecheck.domain.actions.NextBestAction
+import com.deliamo.spywarecheck.domain.actions.SettingsKind
 
 object NextBestActionLauncher {
 

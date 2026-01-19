@@ -1,6 +1,8 @@
-package com.deliamo.spywarecheck.ui.actions
+package com.deliamo.spywarecheck.ui.actions.registry
 
 import com.deliamo.spywarecheck.domain.model.ScanFinding
+import com.deliamo.spywarecheck.domain.actions.NextBestAction
+import com.deliamo.spywarecheck.domain.actions.SettingsKind
 
 object NextBestActionRegistry {
     fun forFindingId(finding: ScanFinding): NextBestAction {

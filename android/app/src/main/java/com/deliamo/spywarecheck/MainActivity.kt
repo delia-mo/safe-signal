@@ -12,12 +12,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.deliamo.spywarecheck.ui.actions.ActionFlowStubScreen
-import com.deliamo.spywarecheck.ui.actions.DeviceAdminRemovalFlowScreen
+import com.deliamo.spywarecheck.ui.actions.flows.ActionFlowStubScreen
+import com.deliamo.spywarecheck.ui.actions.flows.GuidedRemovalFlowScreen
+import com.deliamo.spywarecheck.ui.actions.flows.specs.DeviceAdminFlowSpec
 import com.deliamo.spywarecheck.ui.navigation.Routes
-import com.deliamo.spywarecheck.ui.screens.quickcheck.QuickCheckViewModel
 import com.deliamo.spywarecheck.ui.screens.finding.FindingDetailScreen
 import com.deliamo.spywarecheck.ui.screens.quickcheck.QuickCheckScreen
+import com.deliamo.spywarecheck.ui.screens.quickcheck.QuickCheckViewModel
 import com.deliamo.spywarecheck.ui.screens.result.ResultScreen
 import com.deliamo.spywarecheck.ui.screens.safetygate.SafetyGateScreen
 import com.deliamo.spywarecheck.ui.screens.scan.ScanScreen
@@ -149,7 +150,8 @@ fun SpywareCheckApp() {
             val flowId = entry.arguments?.getString("flowId") ?: ""
             val step = entry.arguments?.getInt("step") ?: 0
 
-            DeviceAdminRemovalFlowScreen(
+            GuidedRemovalFlowScreen(
+                spec = DeviceAdminFlowSpec,
                 flowId = flowId,
                 step = step,
                 onBack = { navController.popBackStack() },

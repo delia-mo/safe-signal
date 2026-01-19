@@ -6,13 +6,3 @@ data class AppCandidate(
     val score: Int,
     val isSystem: Boolean
 )
-
-data class TutorialImg(
-    val resId: Int,
-    val desc: String
-)
-
-data class MatchResult(
-    val expectedName: String,
-    val candidates: List<AppCandidate>
-)

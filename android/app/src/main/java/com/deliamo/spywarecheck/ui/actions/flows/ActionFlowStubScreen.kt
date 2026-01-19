@@ -1,4 +1,4 @@
-package com.deliamo.spywarecheck.ui.actions
+package com.deliamo.spywarecheck.ui.actions.flows
 
 import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
@@ -15,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.deliamo.spywarecheck.ui.components.AppScaffold
 import com.deliamo.spywarecheck.ui.components.BulletItem
-import org.w3c.dom.Text
 
 @Composable
 fun ActionFlowStubScreen(
