@@ -1,32 +1,45 @@
 package com.deliamo.spywarecheck.ui.actions
 
-import android.R
-import android.R.attr.onClick
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
+import android.graphics.Paint
 import android.net.Uri
 import android.provider.Settings
-import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -34,21 +47,29 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import com.deliamo.spywarecheck.domain.model.AdminEntry
+import androidx.compose.ui.window.Dialog
+import com.deliamo.spywarecheck.R
 import com.deliamo.spywarecheck.domain.model.AppCandidate
+import com.deliamo.spywarecheck.domain.model.MatchResult
 import com.deliamo.spywarecheck.domain.model.ScanFinding
+import com.deliamo.spywarecheck.domain.model.TutorialImg
 import com.deliamo.spywarecheck.ui.components.AppScaffold
 import com.deliamo.spywarecheck.ui.components.BulletItem
 import com.deliamo.spywarecheck.ui.screens.scan.ScanUiState
 import com.deliamo.spywarecheck.ui.screens.scan.ScanViewModel
-import com.squareup.wire.WireField
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
-import kotlinx.coroutines.yield
 
 @Composable
 fun DeviceAdminRemovalFlowScreen(
@@ -152,24 +173,50 @@ private fun Step1_OpenDeviceAdminSettings(
     context: Context,
     onNavigateStep: (Int) -> Unit,
 ) {
+    var showExamples by remember { mutableStateOf(false) }
+
+    Text("Schritt 2/4", style = MaterialTheme.typography.labelLarge)
+    Text("Verwaltungsrechte ausschalten", style = MaterialTheme.typography.titleLarge)
+
     Text(
-        text = "Schritt 2/4",
-        style = MaterialTheme.typography.labelLarge
-    )
-    Text(
-        text = "Verwaltungsrechte ausschalten", style = MaterialTheme.typography.titleLarge
-    )
-    Text(
-        text = "Tippe auf \"Einstellungen öffnen\". Suche in der Übersicht nach unbekannten Apps, " +
-                "oder Apps, von denen du diese Funktion nicht erwartest. Deaktiviere sie. Dann " +
-                "komm zurück in diese App.",
+        text = "Diese Rechte können missbraucht werden. Wir schalten sie jetzt aus.",
         style = MaterialTheme.typography.bodyMedium
     )
 
-    Spacer(Modifier.height(8.dp))
+    Spacer(Modifier.height(12.dp))
+
+    // 3 short steps
+    Text("So geht’s:", style = MaterialTheme.typography.titleSmall)
+    Spacer(Modifier.height(6.dp))
+    Text("1) Tippe auf „Einstellungen öffnen“.", style = MaterialTheme.typography.bodyMedium)
+    Text("2) Suche oben nach „admin“ oder „Geräteadministrator“.", style = MaterialTheme.typography.bodyMedium)
+    Text("3) Öffne eine unbekannte App und tippe „Geräteadministration beenden“.", style = MaterialTheme.typography.bodyMedium)
+
+    Spacer(Modifier.height(10.dp))
+
+    Text(
+        text = "Hinweis: Namen können je nach Handy anders heißen. Wenn du unsicher bist, ändere nichts " +
+                "und wende dich an eine Beratungsstelle.",
+        style = MaterialTheme.typography.bodySmall
+    )
+
+    Spacer(Modifier.height(12.dp))
+
+    // Optional examples
+    TextButton(onClick = { showExamples = !showExamples }) {
+        Text(if (showExamples) "Beispielbilder ausblenden" else "Beispielbilder anzeigen")
+    }
+
+    AnimatedVisibility(visible = showExamples) {
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            TutorialImages() // deine Thumbnails + Fullscreen viewer
+        }
+    }
+
+    Spacer(Modifier.height(12.dp))
 
     Button(
-        onClick = { onOpenDeviceAdminSettings(context) },
+        onClick = { onOpenSettings(context) },
         modifier = Modifier.fillMaxWidth()
     ) { Text("Einstellungen öffnen") }
 
@@ -178,11 +225,6 @@ private fun Step1_OpenDeviceAdminSettings(
         modifier = Modifier.fillMaxWidth()
     ) { Text("Ich bin zurück – weiter") }
 }
-
-data class MatchResult(
-    val expectedName: String,
-    val candidates: List<AppCandidate>
-)
 
 @Composable
 private fun Step2_OpenAppDetailsAndUninstall(
@@ -217,7 +259,10 @@ private fun Step2_OpenAppDetailsAndUninstall(
             modifier = Modifier.fillMaxWidth()
         ) { Text("App-Übersicht öffnen") }
 
-        Button(onClick = { onNavigateStep(3) }, modifier = Modifier.fillMaxWidth()) { Text("Weiter") }
+        Button(
+            onClick = { onNavigateStep(3) },
+            modifier = Modifier.fillMaxWidth()
+        ) { Text("Weiter") }
         return
     }
 
@@ -248,12 +293,7 @@ private fun Step2_OpenAppDetailsAndUninstall(
     }
 
     results.forEach { r ->
-        Text("• ${r.expectedName}", style = MaterialTheme.typography.titleSmall)
-
-        Text(
-            text = "Hinweis: Deinstalliere die App nur, wenn der Name in den App-Infos genau passt.",
-            style = MaterialTheme.typography.bodySmall
-        )
+        Text(r.expectedName, style = MaterialTheme.typography.titleSmall)
 
         if (r.candidates.isEmpty()) {
             Text(
@@ -282,7 +322,6 @@ private fun Step2_OpenAppDetailsAndUninstall(
         Text("Weiter")
     }
 }
-
 
 
 @Composable
@@ -336,26 +375,101 @@ private fun Step3_Rescan(
         ) { Text("Zurück zum Ergebnis") }
     }
 
-    OutlinedButton(onClick = onFinish, modifier = Modifier.fillMaxWidth()) { Text("Fertig") }
+    OutlinedButton(onClick = onFinish, modifier = Modifier.fillMaxWidth()) { Text("Fertig") } // TODO marker, dass abgeschlossen
 }
 
-private fun onOpenDeviceAdminSettings(context: Context) {
-    val candidates = listOf(
-        "android.settings.DEVICE_ADMIN_SETTINGS",
-        Settings.ACTION_SECURITY_SETTINGS,
-        Settings.ACTION_PRIVACY_SETTINGS,
-        Settings.ACTION_SETTINGS
+@Composable
+private fun TutorialImages() {
+    // Currently enlarged image (null = none)
+    var selected by remember { mutableStateOf<TutorialImg?>(null) }
+
+    val images = listOf(
+        TutorialImg(R.drawable.admin_tutorial_1, "Schlagwort suchen und Einstellung auswählen"),
+        TutorialImg(
+            R.drawable.admin_tutorial_2,
+            "Aktive, unerwartete Apps mit Admin-Rechten auswählen"
+        ),
+        TutorialImg(R.drawable.admin_tutorial_3, "Admin-Modus deaktivieren")
     )
 
-    for (action in candidates) {
-        try {
-            context.startActivity(Intent(action).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
-            return
-        } catch (_: ActivityNotFoundException) {
-            //try next
+    // Thumbnails in a row
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        images.forEach { img ->
+            Image(
+                painter = painterResource(img.resId),
+                contentDescription = img.desc,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .weight(1f)
+                    .aspectRatio(9f / 16f)
+                    .clickable { selected = img }
+            )
+        }
+    }
+
+    if (selected != null) {
+        Dialog(onDismissRequest = { selected = null }) {
+            // Fullscreen scrim + tab to close
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.85f))
+                    .clickable { selected = null }
+                    .padding(16.dp)
+            ) {
+                IconButton(
+                    onClick = { selected = null },
+                    modifier = Modifier.align(Alignment.TopEnd)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = "Schließen",
+                        tint = Color.White
+                    )
+                }
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clickable(enabled = false) {},
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Column(modifier = Modifier.padding(12.dp)) {
+                        Spacer(Modifier.height(24.dp))
+                        Image(
+                            painter = painterResource(selected!!.resId),
+                            contentDescription = selected!!.desc,
+                            contentScale = ContentScale.Fit,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(2f)
+
+                        )
+                        Text(
+                            text = selected!!.desc,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.White
+                        )
+                    }
+                }
+            }
         }
     }
 }
+
+private fun onOpenSettings(context: Context) {
+
+    try {
+        context.startActivity(Intent(Settings.ACTION_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+        return
+    } catch (_: ActivityNotFoundException) {
+        context.startActivity(Intent(Intent.ACTION_MAIN).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+    }
+}
+
 
 private fun openAppDetails(context: Context, packageName: String) {
     val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
