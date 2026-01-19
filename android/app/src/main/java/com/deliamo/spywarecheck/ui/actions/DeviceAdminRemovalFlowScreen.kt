@@ -45,7 +45,9 @@ import com.deliamo.spywarecheck.ui.components.BulletItem
 import com.deliamo.spywarecheck.ui.screens.scan.ScanUiState
 import com.deliamo.spywarecheck.ui.screens.scan.ScanViewModel
 import com.squareup.wire.WireField
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 
 @Composable
@@ -150,7 +152,6 @@ private fun Step1_OpenDeviceAdminSettings(
     context: Context,
     onNavigateStep: (Int) -> Unit,
 ) {
-    var isLoading by remember { mutableStateOf(false) }
     Text(
         text = "Schritt 2/4",
         style = MaterialTheme.typography.labelLarge
@@ -169,29 +170,19 @@ private fun Step1_OpenDeviceAdminSettings(
 
     Button(
         onClick = { onOpenDeviceAdminSettings(context) },
-        enabled = !isLoading,
         modifier = Modifier.fillMaxWidth()
     ) { Text("Einstellungen öffnen") }
 
     OutlinedButton(
-        onClick = { isLoading = true },
-        modifier = Modifier.fillMaxWidth(),
-        enabled = !isLoading
+        onClick = { onNavigateStep(2) },
+        modifier = Modifier.fillMaxWidth()
     ) { Text("Ich bin zurück – weiter") }
-
-    if (isLoading) {
-        Spacer(Modifier.height(12.dp))
-        Text("Einen Moment bitte …", style = MaterialTheme.typography.bodyMedium)
-        Spacer(Modifier.height(8.dp))
-        LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-
-        // ✅ navigate AFTER the loading UI has had a chance to draw
-        LaunchedEffect(Unit) {
-            yield()          // let Compose render the progress bar
-            onNavigateStep(2)
-        }
-    }
 }
+
+data class MatchResult(
+    val expectedName: String,
+    val candidates: List<AppCandidate>
+)
 
 @Composable
 private fun Step2_OpenAppDetailsAndUninstall(
@@ -201,7 +192,7 @@ private fun Step2_OpenAppDetailsAndUninstall(
     onNavigateStep: (Int) -> Unit
 ) {
     Text("Schritt 3/4", style = MaterialTheme.typography.labelLarge)
-    Text("App entfernen", style = MaterialTheme.typography.titleLarge)
+    Text("App(s) entfernen", style = MaterialTheme.typography.titleLarge)
     Text(
         "Öffne die App-Info der betroffenen App(s). Wenn du sie nicht kennst, stoppe oder deinstalliere sie. Komm danach zurück.",
         style = MaterialTheme.typography.bodyMedium
@@ -226,26 +217,56 @@ private fun Step2_OpenAppDetailsAndUninstall(
             modifier = Modifier.fillMaxWidth()
         ) { Text("App-Übersicht öffnen") }
 
-        Button(
-            onClick = { onNavigateStep(3) },
-            modifier = Modifier.fillMaxWidth()
-        ) { Text("Weiter") }
+        Button(onClick = { onNavigateStep(3) }, modifier = Modifier.fillMaxWidth()) { Text("Weiter") }
         return
     }
 
     val pm = context.packageManager
 
-    pairs.forEach { (rawLabel, pkgFromScan) ->
-        val expectedName = normalizeLabelForMatch(rawLabel)
+    // --- Loading state ---
+    var isLoading by remember(pairs) { mutableStateOf(true) }
+    var results by remember(pairs) { mutableStateOf<List<MatchResult>>(emptyList()) }
 
-        // hol max. 2 Treffer
-        val top = resolveTopPackagesForFinding(pm, expectedName, pkgFromScan, max = 2)
+    LaunchedEffect(pairs) {
+        isLoading = true
+        val computed = withContext(Dispatchers.Default) {
+            pairs.map { (rawLabel, pkgFromScan) ->
+                val expectedName = normalizeLabelForMatch(rawLabel)
+                val top = resolveTopPackagesForFinding(pm, expectedName, pkgFromScan, max = 2)
+                MatchResult(expectedName = expectedName, candidates = top)
+            }
+        }
+        results = computed
+        isLoading = false
+    }
 
-        Text("• $expectedName", style = MaterialTheme.typography.titleSmall)
+    if (isLoading) {
+        Text("Einen Moment bitte …", style = MaterialTheme.typography.bodyMedium)
+        Spacer(Modifier.height(8.dp))
+        LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+        Spacer(Modifier.height(12.dp))
 
-        if (top.isEmpty()) {
+        // Optional: still show the button (or disable it)
+        Button(
+            onClick = { /* no-op */ },
+            enabled = false,
+            modifier = Modifier.fillMaxWidth()
+        ) { Text("Weiter") }
+        return
+    }
+
+    // --- Render computed results ---
+    results.forEach { r ->
+        Text("• ${r.expectedName}", style = MaterialTheme.typography.titleSmall)
+
+        Text(
+            text = "Hinweis: Deinstalliere die App nur, wenn der Name in den App-Infos genau passt.",
+            style = MaterialTheme.typography.bodySmall
+        )
+
+        if (r.candidates.isEmpty()) {
             Text(
-                text = "Wir konnten die App nicht eindeutig zuordnen. Bitte suche in der App-Übersicht nach „$expectedName“. " +
+                text = "Wir konnten die App nicht eindeutig zuordnen. Bitte suche in der App-Übersicht nach „${r.expectedName}“. " +
                         "Wenn du unsicher bist: nichts deinstallieren.",
                 style = MaterialTheme.typography.bodySmall
             )
@@ -254,7 +275,7 @@ private fun Step2_OpenAppDetailsAndUninstall(
                 modifier = Modifier.fillMaxWidth()
             ) { Text("App-Übersicht öffnen (bitte suchen)") }
         } else {
-            top.forEach { c ->
+            r.candidates.forEach { c ->
                 OutlinedButton(
                     onClick = { openAppDetails(context, c.packageName) },
                     modifier = Modifier.fillMaxWidth()
@@ -262,12 +283,15 @@ private fun Step2_OpenAppDetailsAndUninstall(
             }
         }
 
+        Spacer(Modifier.height(12.dp))
+        HorizontalDivider()
     }
 
     Button(onClick = { onNavigateStep(3) }, modifier = Modifier.fillMaxWidth()) {
         Text("Weiter")
     }
 }
+
 
 
 @Composable
