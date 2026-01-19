@@ -1,6 +1,7 @@
 package com.deliamo.spywarecheck.ui.actions.flows.specs
 
 import com.deliamo.spywarecheck.R
+import com.deliamo.spywarecheck.domain.actions.SettingsKind
 import com.deliamo.spywarecheck.ui.actions.flows.GuidedFlowSpec
 import com.deliamo.spywarecheck.ui.actions.flows.components.TutorialImgUi
 
@@ -28,5 +29,7 @@ val DeviceAdminFlowSpec = GuidedFlowSpec(
         TutorialImgUi(R.drawable.admin_tutorial_1, "Schlagwort suchen und Einstellung auswählen"),
         TutorialImgUi(R.drawable.admin_tutorial_2, "Unerwartete App auswählen"),
         TutorialImgUi(R.drawable.admin_tutorial_3, "Admin-Modus deaktivieren")
-    )
+    ),
+
+    preferredSettingsKind = SettingsKind.GENERAL
 )

@@ -45,12 +45,12 @@ object NextBestActionLauncher {
     private fun actionFor(kind: SettingsKind): String {
         return when (kind) {
             SettingsKind.ACCESSIBILITY -> Settings.ACTION_ACCESSIBILITY_SETTINGS
-            SettingsKind.DEVICE_ADMIN -> Settings.ACTION_PRIVACY_SETTINGS
             SettingsKind.LOCATION -> Settings.ACTION_LOCATION_SOURCE_SETTINGS
             SettingsKind.LOCATION_APP_PERMISSION ->
                 Settings.ACTION_LOCATION_SOURCE_SETTINGS
 
             SettingsKind.SECURITY -> Settings.ACTION_SECURITY_SETTINGS
+            SettingsKind.GENERAL -> Settings.ACTION_SETTINGS
         }
     }
 

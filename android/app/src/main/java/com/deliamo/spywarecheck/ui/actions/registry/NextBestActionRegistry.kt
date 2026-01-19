@@ -10,9 +10,9 @@ object NextBestActionRegistry {
 
             // HIGH
             "accessibility_enabled" ->
-                NextBestAction.OpenSettings(
-                    label = "Bedienungshilfen prüfen",
-                    kind = SettingsKind.ACCESSIBILITY
+                NextBestAction.OpenActionFlow(
+                    label = "Sicher entfernen (Schritte ansehen)",
+                    flowId = finding.id
                 )
 
             "device_admin_enabled" ->
@@ -20,10 +20,7 @@ object NextBestActionRegistry {
                     label = "Sicher entfernen (Schritte ansehen)",
                     flowId = finding.id
                 )
-//                when(finding.affectedPackages.size) {
-//                    1 -> NextBestAction.OpenAppDetails("App prüfen", finding.affectedPackages.first())
-//                    else -> NextBestAction.ChooseApp("Apps prüfen", flowId = finding.id)
-//                }
+
 
             // MEDIUM
             "background_location_apps" ->
@@ -34,9 +31,9 @@ object NextBestActionRegistry {
 
             // LOW
             "location_enabled" ->
-                NextBestAction.OpenSettings(
+                NextBestAction.OpenActionFlow(
                     label = "Standort-Einstellungen prüfen",
-                    kind = SettingsKind.LOCATION
+                    flowId = finding.id
                 )
 
             // TODO root: guided flow

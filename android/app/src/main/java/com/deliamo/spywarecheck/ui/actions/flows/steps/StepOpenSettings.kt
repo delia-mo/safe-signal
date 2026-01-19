@@ -16,6 +16,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.deliamo.spywarecheck.domain.actions.SettingsKind
 import com.deliamo.spywarecheck.ui.actions.flows.components.TutorialImagesRow
 import com.deliamo.spywarecheck.ui.actions.flows.components.TutorialImgUi
 
@@ -27,7 +28,8 @@ fun StepOpenSettingsWithSearch(
     steps: List<String>,
     hint: String,
     tutorialImages: List<TutorialImgUi>,
-    onOpenSettings: () -> Unit,
+    settingsKind: SettingsKind,
+    onOpenSettings: (SettingsKind) -> Unit,
     onNext: () -> Unit,
     onQuickExit: () -> Unit
 ) {
@@ -64,7 +66,7 @@ fun StepOpenSettingsWithSearch(
 
     Spacer(Modifier.height(12.dp))
 
-    Button(onClick = onOpenSettings, modifier = Modifier.fillMaxWidth()) {
+    Button(onClick = { onOpenSettings(settingsKind) }, modifier = Modifier.fillMaxWidth()) {
         Text("Einstellungen öffnen")
     }
     OutlinedButton(onClick = onNext, modifier = Modifier.fillMaxWidth()) {

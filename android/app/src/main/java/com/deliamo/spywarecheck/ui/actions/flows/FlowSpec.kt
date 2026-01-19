@@ -1,9 +1,10 @@
 package com.deliamo.spywarecheck.ui.actions.flows
 
+import com.deliamo.spywarecheck.domain.actions.SettingsKind
 import com.deliamo.spywarecheck.ui.actions.flows.components.TutorialImgUi
 
 data class GuidedFlowSpec(
-    val findingId: String, // e.g. "device_admin_enabled" or "accessibility_enabled"
+    val findingId: String,
     val title: String,
     val stepCount: Int = 4,
 
@@ -18,6 +19,7 @@ data class GuidedFlowSpec(
     val settingsSteps: List<String>,
     val settingsHint: String,
     val tutorialImages: List<TutorialImgUi> = emptyList(),
+    val preferredSettingsKind: SettingsKind = SettingsKind.GENERAL,
 
     // Step 2
     val uninstallTitle: String = "App(s) entfernen",

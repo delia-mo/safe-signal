@@ -21,6 +21,7 @@ import com.deliamo.spywarecheck.ui.components.AppScaffold
 import com.deliamo.spywarecheck.ui.screens.scan.ScanUiState
 import com.deliamo.spywarecheck.ui.screens.scan.ScanViewModel
 import com.deliamo.spywarecheck.ui.actions.flows.steps.*
+import com.deliamo.spywarecheck.ui.actions.util.onOpenSettings
 
 @Composable
 fun GuidedRemovalFlowScreen(
@@ -73,7 +74,8 @@ fun GuidedRemovalFlowScreen(
                     steps = spec.settingsSteps,
                     hint = spec.settingsHint,
                     tutorialImages = spec.tutorialImages,
-                    onOpenSettings = { com.deliamo.spywarecheck.ui.actions.util.onOpenSettings(context) },
+                    settingsKind = spec.preferredSettingsKind,
+                    onOpenSettings = { kind -> onOpenSettings(context, kind) },
                     onNext = { onNavigateStep(2) },
                     onQuickExit = onQuickExit
                 )

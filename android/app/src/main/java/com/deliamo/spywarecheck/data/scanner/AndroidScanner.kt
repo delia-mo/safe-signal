@@ -131,23 +131,6 @@ class AndroidScanner(
         }
     }
 
-    private fun getActiveDeviceAdminRefs(pm: PackageManager): List<AppRef> {
-        return runCatching {
-            val dpm = context.getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
-            val admins = dpm.activeAdmins.orEmpty()
-
-            admins
-                .map { cn -> resolveDeviceAdminLabel(pm, cn) }
-                .sortedBy { it.displayName().lowercase() }
-        }.getOrElse { emptyList() }
-    }
-
-    private fun getActiveDeviceAdminPackages(pm: PackageManager): List<String> =
-        getActiveDeviceAdminRefs(pm).map { it.packageName }
-
-    private fun getActiveDeviceAdminLabels(pm: PackageManager): List<String> =
-        getActiveDeviceAdminRefs(pm).map { it.displayName() }
-
     private fun resolveDeviceAdminLabel(pm: PackageManager, cn: ComponentName): AppRef {
         val receiverLabel = try {
             val ri = pm.getReceiverInfo(cn, PackageManager.GET_META_DATA)

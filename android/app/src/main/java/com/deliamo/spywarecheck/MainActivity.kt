@@ -1,5 +1,6 @@
 package com.deliamo.spywarecheck
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
@@ -14,6 +15,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.deliamo.spywarecheck.ui.actions.flows.ActionFlowStubScreen
 import com.deliamo.spywarecheck.ui.actions.flows.GuidedRemovalFlowScreen
+import com.deliamo.spywarecheck.ui.actions.flows.specs.AccessibilityFlowSpec
 import com.deliamo.spywarecheck.ui.actions.flows.specs.DeviceAdminFlowSpec
 import com.deliamo.spywarecheck.ui.navigation.Routes
 import com.deliamo.spywarecheck.ui.screens.finding.FindingDetailScreen
@@ -152,6 +154,38 @@ fun SpywareCheckApp() {
 
             GuidedRemovalFlowScreen(
                 spec = DeviceAdminFlowSpec,
+                flowId = flowId,
+                step = step,
+                onBack = { navController.popBackStack() },
+                onQuickExit = quickExit,
+                onNavigateStep = { nextStep ->
+                    navController.navigate(Routes.actionFlowStep(flowId, nextStep))
+                },
+                onFinish = { navController.navigate(Routes.SCAN) },
+                scanVm = scanVm
+            )
+        }
+
+        composable(
+            route = Routes.ACTION_FLOW_STEP,
+            arguments = listOf(
+                navArgument("flowId") { type = NavType.StringType },
+                navArgument("step") { type = NavType.IntType }
+            )
+        ) { entry ->
+            val flowId = entry.arguments?.getString("flowId") ?: ""
+            val step = entry.arguments?.getInt("step") ?: 0
+
+            val decoded = Uri.decode(flowId)
+
+            val spec = when (decoded) {
+                "device_admin_enabled" -> DeviceAdminFlowSpec
+                "accessibility_enabled" -> AccessibilityFlowSpec
+                else -> DeviceAdminFlowSpec // fallback
+            }
+
+            GuidedRemovalFlowScreen(
+                spec = spec,
                 flowId = flowId,
                 step = step,
                 onBack = { navController.popBackStack() },

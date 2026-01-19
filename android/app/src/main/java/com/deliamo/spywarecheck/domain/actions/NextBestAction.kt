@@ -21,11 +21,3 @@ sealed class NextBestAction(open val label: String) {
         val flowId: String
     ): NextBestAction(label)
 }
-
-enum class SettingsKind {
-    ACCESSIBILITY,
-    DEVICE_ADMIN,
-    LOCATION,
-    LOCATION_APP_PERMISSION,
-    SECURITY
-}
