@@ -245,17 +245,8 @@ private fun Step2_OpenAppDetailsAndUninstall(
         Spacer(Modifier.height(8.dp))
         LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
         Spacer(Modifier.height(12.dp))
-
-        // Optional: still show the button (or disable it)
-        Button(
-            onClick = { /* no-op */ },
-            enabled = false,
-            modifier = Modifier.fillMaxWidth()
-        ) { Text("Weiter") }
-        return
     }
 
-    // --- Render computed results ---
     results.forEach { r ->
         Text("• ${r.expectedName}", style = MaterialTheme.typography.titleSmall)
 
