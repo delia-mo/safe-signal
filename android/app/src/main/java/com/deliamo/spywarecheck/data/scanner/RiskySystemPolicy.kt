@@ -3,16 +3,15 @@ package com.deliamo.spywarecheck.data.scanner
 object RiskySystemPolicy {
 
     val allowListedLableKeywords: List<String> = listOf(
-        "google play",
         "family link",
-        "find phone",
+        "find",
         "find device",
         "gerät finden",
         "geräte finden",
         "kindersicherung",
         "parental",
-        "verwaltung",
-        "device policy"
+        "device policy",
+        "maps"
     )
 
     fun shouldShowSystemApp(packageName: String, appLabel: String?): Boolean {

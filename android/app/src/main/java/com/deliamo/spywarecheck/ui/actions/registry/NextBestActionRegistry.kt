@@ -11,23 +11,23 @@ object NextBestActionRegistry {
             // HIGH
             "accessibility_enabled" ->
                 NextBestAction.OpenActionFlow(
-                    label = "Sicher entfernen (Schritte ansehen)",
+                    label = "Zugriff entziehen",
                     flowId = finding.id
                 )
 
             "device_admin_enabled" ->
                 NextBestAction.OpenActionFlow(
-                    label = "Sicher entfernen (Schritte ansehen)",
+                    label = "Zugriff entziehen",
                     flowId = finding.id
                 )
 
 
             // MEDIUM
             "background_location_apps" ->
-                when(finding.affectedPackages.size) {
-                    1 -> NextBestAction.OpenAppDetails("Berechtigung bei App prüfen", finding.affectedPackages.first())
-                    else -> NextBestAction.ChooseApp("Apps mit Zugriff prüfen", flowId = finding.id)
-                }
+                NextBestAction.OpenActionFlow(
+                    label = "Standort-Zugriff prüfen",
+                    flowId = finding.id
+                )
 
             // LOW
             "location_enabled" ->

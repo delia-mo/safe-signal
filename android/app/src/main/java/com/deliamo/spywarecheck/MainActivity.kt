@@ -16,7 +16,9 @@ import androidx.navigation.navArgument
 import com.deliamo.spywarecheck.ui.actions.flows.ActionFlowStubScreen
 import com.deliamo.spywarecheck.ui.actions.flows.GuidedRemovalFlowScreen
 import com.deliamo.spywarecheck.ui.actions.flows.specs.AccessibilityFlowSpec
+import com.deliamo.spywarecheck.ui.actions.flows.specs.BackgroundLocationFlowSpec
 import com.deliamo.spywarecheck.ui.actions.flows.specs.DeviceAdminFlowSpec
+import com.deliamo.spywarecheck.ui.actions.flows.specs.LocationFlowSpec
 import com.deliamo.spywarecheck.ui.navigation.Routes
 import com.deliamo.spywarecheck.ui.screens.finding.FindingDetailScreen
 import com.deliamo.spywarecheck.ui.screens.quickcheck.QuickCheckScreen
@@ -181,6 +183,8 @@ fun SpywareCheckApp() {
             val spec = when (decoded) {
                 "device_admin_enabled" -> DeviceAdminFlowSpec
                 "accessibility_enabled" -> AccessibilityFlowSpec
+                "background_location_apps" -> BackgroundLocationFlowSpec
+                "location_enabled" -> LocationFlowSpec
                 else -> DeviceAdminFlowSpec // fallback
             }
 
