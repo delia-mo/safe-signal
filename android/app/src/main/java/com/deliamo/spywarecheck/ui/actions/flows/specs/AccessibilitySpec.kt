@@ -3,6 +3,7 @@ package com.deliamo.spywarecheck.ui.actions.flows.specs
 import com.deliamo.spywarecheck.R
 import com.deliamo.spywarecheck.domain.actions.SettingsKind
 import com.deliamo.spywarecheck.ui.actions.flows.GuidedFlowSpec
+import com.deliamo.spywarecheck.ui.actions.flows.components.TutorialImgUi
 
 val AccessibilityFlowSpec = GuidedFlowSpec(
     findingId = "accessibility_enabled",
@@ -20,16 +21,15 @@ val AccessibilityFlowSpec = GuidedFlowSpec(
     settingsIntro = "Wenn eine unbekannte App Bedienungshilfen nutzen darf, kann sie sehr viel auf deinem Handy mitlesen/steuern.",
     settingsSteps = listOf(
         "1) Tippe auf „Einstellungen öffnen“.",
-        "2) Suche nach „Bedienungshilfen“ oder „Accessibility“.",
+        "2) Falls du nicht schon in den richtigen Einstellungen landest: Suche nach „Bedienungshilfen“ oder „Accessibility“.",
         "3) Öffne „Installierte/Heruntergeladene Apps“ und schalte Unbekanntes aus."
     ),
     settingsHint = "Hinweis: Menünamen unterscheiden sich je nach Gerät. Wenn du unsicher bist: ändere nichts.",
-    tutorialImages = emptyList(),
-//    tutorialImages = listOf(
-//        TutorialImgUi(R.drawable.access_tutorial_1, "Bedienungshilfen suchen"),
-//        TutorialImgUi(R.drawable.access_tutorial_2, "Unerwartete App finden"),
-//        TutorialImgUi(R.drawable.access_tutorial_3, "Zugriff ausschalten")
-//    )
+    tutorialImages = listOf(
+        TutorialImgUi(R.drawable.accessibility_tutorial_1, "Option „Heruntergeladene Apps“ wählen"),
+        TutorialImgUi(R.drawable.accessibility_tutorial_2, "Unerwartete App finden"),
+        TutorialImgUi(R.drawable.accessibility_tutorial_3, "Zugriff ausschalten")
+    ),
     preferredSettingsKind = SettingsKind.ACCESSIBILITY
 )
 
