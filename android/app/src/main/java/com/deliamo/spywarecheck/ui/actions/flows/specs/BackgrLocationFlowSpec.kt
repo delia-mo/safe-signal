@@ -1,7 +1,9 @@
 package com.deliamo.spywarecheck.ui.actions.flows.specs
 
+import com.deliamo.spywarecheck.R
 import com.deliamo.spywarecheck.domain.actions.SettingsKind
 import com.deliamo.spywarecheck.ui.actions.flows.GuidedFlowSpec
+import com.deliamo.spywarecheck.ui.actions.flows.components.TutorialImgUi
 
 val BackgroundLocationFlowSpec = GuidedFlowSpec(
     findingId = "background_location_apps",
@@ -32,6 +34,12 @@ val BackgroundLocationFlowSpec = GuidedFlowSpec(
                 "„Nicht zulassen“ oder „Nur während der Nutzung“. Wenn du unsicher bist: ändere nichts.",
 
     rescanTitle = "Erneut prüfen",
-    rescanBody = "Starte einen neuen Scan. Wir prüfen danach, ob weiterhin Apps mit Hintergrund-Standortzugriff gefunden werden."
+    rescanBody = "Starte einen neuen Scan. Wir prüfen danach, ob weiterhin Apps mit Hintergrund-Standortzugriff gefunden werden.",
+    tutorialImages = listOf(
+        TutorialImgUi(R.drawable.backgloc_tutorial_1, "In den Standort-Einstellungen „Standortzugriff von Apps“ auswählen."),
+        TutorialImgUi(R.drawable.backgloc_tutorial_2, "Eine App mit dauerhaftem Standortzugriff wählen."),
+        TutorialImgUi(R.drawable.backgloc_tutorial_3, "Eine der folgenden Punkte auswählen: „Während der Nutzung zulassen“, " +
+                "„Immer fragen“ oder „Nicht zulassen“.")
+    )
 )
 
