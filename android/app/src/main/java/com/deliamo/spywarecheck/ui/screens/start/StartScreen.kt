@@ -96,7 +96,7 @@ fun StartScreen(
                 SmallActionCard(
                     title = "Report",
                     subtitle = "Ansehen / Export",
-                    onClick = onOpenActions,
+                    onClick = onOpenReport,
                     modifier = Modifier.weight(1f)
                 )
             }

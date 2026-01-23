@@ -20,6 +20,7 @@ import com.deliamo.spywarecheck.ui.actions.flows.specs.BackgroundLocationFlowSpe
 import com.deliamo.spywarecheck.ui.actions.flows.specs.DeviceAdminFlowSpec
 import com.deliamo.spywarecheck.ui.actions.flows.specs.LocationFlowSpec
 import com.deliamo.spywarecheck.ui.navigation.Routes
+import com.deliamo.spywarecheck.ui.screens.actions.MeasuresScreen
 import com.deliamo.spywarecheck.ui.screens.finding.FindingDetailScreen
 import com.deliamo.spywarecheck.ui.screens.quickcheck.QuickCheckScreen
 import com.deliamo.spywarecheck.ui.screens.quickcheck.QuickCheckViewModel
@@ -55,6 +56,7 @@ fun SpywareCheckApp() {
     val quickExit: () -> Unit = { quickExitToBrowser(context) }
     val startQuickCheck: () -> Unit = { navController.navigate(Routes.QUICK_CHECK) }
     val startScanGated: () -> Unit = { navController.navigate(Routes.SAFETY_GATE) }
+    val openActions: () -> Unit = { navController.navigate(Routes.MEASURES) }
     val goBack: () -> Unit = { navController.popBackStack() }
     val quickCheckVm: QuickCheckViewModel = viewModel()
     val scanVm: ScanViewModel = viewModel()
@@ -68,7 +70,7 @@ fun SpywareCheckApp() {
                 onStartQuickCheck = startQuickCheck,
                 onStartScanGated = startScanGated,
                 onOpenReport = {},
-                onOpenActions = {},
+                onOpenActions = openActions,
                 onQuickExit = quickExit,
             )
         }
@@ -201,6 +203,14 @@ fun SpywareCheckApp() {
                 scanVm = scanVm
             )
         }
-
+        composable(Routes.MEASURES) {
+            MeasuresScreen(
+                onBack = goBack,
+                onQuickExit = quickExit,
+                onStartScan = startScanGated,
+                onOpenFlow = { flowId -> navController.navigate(Routes.actionFlowStep(flowId, 0)) },
+                scanVm = scanVm
+            )
+        }
     }
 }

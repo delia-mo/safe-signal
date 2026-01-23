@@ -15,4 +15,5 @@ object Routes {
     fun actionFlow(flowId: String) = "actions/${Uri.encode(flowId)}"
     const val ACTION_FLOW_STEP = "actions/{flowId}/{step}"
     fun actionFlowStep(flowId: String, step: Int) = "actions/${Uri.encode(flowId)}/$step"
+    const val MEASURES = "measures"
 }

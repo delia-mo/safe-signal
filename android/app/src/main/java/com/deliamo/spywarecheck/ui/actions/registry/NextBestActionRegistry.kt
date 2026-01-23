@@ -50,4 +50,24 @@ object NextBestActionRegistry {
                 )
         }
     }
+
+
+    fun isActionableFinding(findingId: String): Boolean {
+        return findingId in setOf(
+            "device_admin_enabled",
+            "accessibility_enabled",
+            "background_location_apps",
+            "location_enabled",
+            "root_hint"
+        )
+    }
+
+    fun preferFindingIdForMeasures(
+        findingId: String,
+        availableFindingIds: Set<String>
+    ): String {
+        return if (findingId == "location_enabled" && "background_location_apps" in availableFindingIds) {
+            "background_location_apps"
+        } else findingId
+    }
 }
