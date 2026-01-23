@@ -30,8 +30,7 @@ val BackgroundLocationFlowSpec = GuidedFlowSpec(
 
     uninstallTitle = "Standort-Zugriff entziehen",
     uninstallBody =
-        "Öffne die App-Infos der betroffenen App(s). Gehe zu „Berechtigungen → Standort“ und stelle auf " +
-                "„Nicht zulassen“ oder „Nur während der Nutzung“. Wenn du unsicher bist: ändere nichts.",
+        "Wenn du Apps nicht kennst: tippe auf „App-Infos öffnen“ und deinstalliere sie. Komm danach zurück.",
 
     rescanTitle = "Erneut prüfen",
     rescanBody = "Starte einen neuen Scan. Wir prüfen danach, ob weiterhin Apps mit Hintergrund-Standortzugriff gefunden werden.",
