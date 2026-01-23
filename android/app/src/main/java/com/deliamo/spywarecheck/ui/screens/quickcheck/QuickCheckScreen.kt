@@ -27,12 +27,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.deliamo.spywarecheck.domain.model.QuickAnswer
 import com.deliamo.spywarecheck.ui.components.AppScaffold
+import com.deliamo.spywarecheck.ui.components.HomeFooterBar
 
 @Composable
 fun QuickCheckScreen(
     onBack: () -> Unit,
     onDone: () -> Unit,
     onQuickExit: () -> Unit,
+    onHome: () -> Unit,
     vm: QuickCheckViewModel
 ) {
     val ui by vm.ui.collectAsState()
@@ -41,10 +43,10 @@ fun QuickCheckScreen(
         title = "Quick Check",
         onQuickExit = onQuickExit,
         showBack = true,
+        footer = { HomeFooterBar(onHome = onHome) },
         onBack = {
             if (ui.canGoBack) vm.previous() else onBack()
         }
-
     ) { padding ->
 
         val q = ui.currentQuestion

@@ -1,4 +1,4 @@
-package com.deliamo.spywarecheck.ui.actions.flows
+package com.deliamo.spywarecheck.ui.screens.actions
 
 import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
@@ -15,18 +15,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.deliamo.spywarecheck.ui.components.AppScaffold
 import com.deliamo.spywarecheck.ui.components.BulletItem
+import com.deliamo.spywarecheck.ui.components.HomeFooterBar
 
 @Composable
 fun ActionFlowStubScreen(
     flowId: String,
     onBack: () -> Unit,
-    onQuickExit: () -> Unit
+    onQuickExit: () -> Unit,
+    onHome: () -> Unit,
 ) {
     AppScaffold(
         title = "Nächste Schritte",
         onQuickExit = onQuickExit,
         showBack = true,
-        onBack = onBack
+        onBack = onBack,
+        footer = { HomeFooterBar(onHome = onHome) }
     ) { padding: PaddingValues ->
         Column(
             modifier = Modifier

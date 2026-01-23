@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import com.deliamo.spywarecheck.ui.actions.launcher.NextBestActionLauncher
 import com.deliamo.spywarecheck.ui.actions.registry.NextBestActionRegistry
 import com.deliamo.spywarecheck.ui.components.AppScaffold
+import com.deliamo.spywarecheck.ui.components.HomeFooterBar
 import com.deliamo.spywarecheck.ui.components.SeverityChip
 import com.deliamo.spywarecheck.ui.screens.scan.ScanUiState
 import com.deliamo.spywarecheck.ui.screens.scan.ScanViewModel
@@ -33,6 +34,7 @@ fun FindingDetailScreen(
     onBack: () -> Unit,
     onQuickExit: () -> Unit,
     onOpenActionFlow: (String) -> Unit,
+    onHome: () -> Unit,
     vm: ScanViewModel
 ) {
     val context = LocalContext.current
@@ -46,7 +48,8 @@ fun FindingDetailScreen(
         title = "Details",
         onQuickExit = onQuickExit,
         showBack = true,
-        onBack = onBack
+        onBack = onBack,
+        footer = { HomeFooterBar(onHome = onHome) }
     ) { padding ->
         Column(
             modifier = Modifier

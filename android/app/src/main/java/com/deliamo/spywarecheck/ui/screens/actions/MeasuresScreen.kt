@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -24,6 +25,7 @@ import com.deliamo.spywarecheck.ui.screens.scan.ScanUiState
 import com.deliamo.spywarecheck.ui.screens.scan.ScanViewModel
 import com.deliamo.spywarecheck.domain.actions.NextBestAction
 import com.deliamo.spywarecheck.ui.components.FindingListItem
+import com.deliamo.spywarecheck.ui.components.HomeFooterBar
 
 
 @Composable
@@ -32,6 +34,7 @@ fun MeasuresScreen(
     onQuickExit: () -> Unit,
     onStartScan: () -> Unit,
     onOpenFlow: (flowId: String) -> Unit,
+    onHome: () -> Unit,
     scanVm: ScanViewModel
 ) {
     val state by scanVm.state.collectAsState()
@@ -40,7 +43,8 @@ fun MeasuresScreen(
         title = "Offene Maßnahmen",
         onQuickExit = onQuickExit,
         showBack = true,
-        onBack = onBack
+        onBack = onBack,
+        footer = { HomeFooterBar(onHome = onHome) }
     ) { padding: PaddingValues ->
 
         when (val s = state) {

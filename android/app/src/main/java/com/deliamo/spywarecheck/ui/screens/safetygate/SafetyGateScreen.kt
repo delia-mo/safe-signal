@@ -22,13 +22,14 @@ import androidx.compose.ui.unit.dp
 import com.deliamo.spywarecheck.domain.safetygate.SafetyGateSpec
 import com.deliamo.spywarecheck.ui.components.AppScaffold
 import com.deliamo.spywarecheck.ui.components.BulletItem
+import com.deliamo.spywarecheck.ui.components.HomeFooterBar
 
 @Composable
 fun SafetyGateScreen(
     spec: SafetyGateSpec,
     onContinue: () -> Unit,
     onCancel: () -> Unit,
-    onQuickExit: () -> Unit
+    onQuickExit: () -> Unit,
 ) {
     var showMoreInfo by remember { mutableStateOf(false) }
 

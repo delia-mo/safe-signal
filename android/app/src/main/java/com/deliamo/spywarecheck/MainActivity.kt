@@ -13,9 +13,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.deliamo.spywarecheck.domain.safetygate.SafetyGateSpec
-import com.deliamo.spywarecheck.ui.actions.flows.ActionFlowStubScreen
-import com.deliamo.spywarecheck.ui.actions.flows.GuidedRemovalFlowScreen
+import com.deliamo.spywarecheck.ui.screens.actions.ActionFlowStubScreen
+import com.deliamo.spywarecheck.ui.screens.actions.GuidedRemovalFlowScreen
 import com.deliamo.spywarecheck.ui.actions.flows.specs.AccessibilityFlowSpec
 import com.deliamo.spywarecheck.ui.actions.flows.specs.BackgroundLocationFlowSpec
 import com.deliamo.spywarecheck.ui.actions.flows.specs.DeviceAdminFlowSpec
@@ -61,6 +60,12 @@ fun SpywareCheckApp() {
     val openActions: () -> Unit = { navController.navigate(Routes.MEASURES) }
     val goBack: () -> Unit = { navController.popBackStack() }
     val quickCheckVm: QuickCheckViewModel = viewModel()
+    val goHome: () -> Unit = {
+        navController.navigate(Routes.START) {
+            popUpTo(Routes.START) { inclusive = false }
+            launchSingleTop = true
+        }
+    }
     val scanVm: ScanViewModel = viewModel()
 
     NavHost(
@@ -83,6 +88,7 @@ fun SpywareCheckApp() {
                 onBack = goBack,
                 onDone = { navController.navigate(Routes.RESULT) },
                 onQuickExit = quickExit,
+                onHome = goHome
             )
         }
 
@@ -92,6 +98,7 @@ fun SpywareCheckApp() {
                 onBack = goBack,
                 onStartScanGated = { navController.navigate(Routes.SCAN_SAFETY_GATE) },
                 onQuickExit = quickExit,
+                onHome = goHome
             )
         }
 
@@ -116,7 +123,8 @@ fun SpywareCheckApp() {
                     navController.navigate(Routes.findingDetail(id))
                 },
                 onQuickExit = quickExit,
-                vm = scanVm
+                onHome = goHome,
+                vm = scanVm,
             )
         }
 
@@ -134,6 +142,7 @@ fun SpywareCheckApp() {
                 onOpenActionFlow = { flowId ->
                     navController.navigate(Routes.actionSafetyGate(flowId))
                 },
+                onHome = goHome,
                 vm = scanVm
             )
         }
@@ -146,7 +155,8 @@ fun SpywareCheckApp() {
             ActionFlowStubScreen(
                 flowId = flowId,
                 onBack = { navController.popBackStack() },
-                onQuickExit = quickExit
+                onQuickExit = quickExit,
+                onHome = goHome
             )
         }
 
@@ -180,6 +190,7 @@ fun SpywareCheckApp() {
                     navController.navigate(Routes.actionFlowStep(flowId, nextStep))
                 },
                 onFinish = { navController.navigate(Routes.SCAN) },
+                onHome = goHome,
                 scanVm = scanVm
             )
         }
@@ -191,6 +202,7 @@ fun SpywareCheckApp() {
                 onStartScan = startScanGated,
                 onOpenFlow = { flowId ->
                     navController.navigate(Routes.actionSafetyGate(flowId = flowId)) },
+                onHome = goHome,
                 scanVm = scanVm
             )
         }
@@ -204,7 +216,7 @@ fun SpywareCheckApp() {
                 spec = SafetyGatePresets.Actions,
                 onContinue = { navController.navigate(Routes.actionFlowStep(flowId, 0)) },
                 onCancel = { navController.navigate(Routes.START) },
-                onQuickExit = quickExit
+                onQuickExit = quickExit,
             )
         }
     }

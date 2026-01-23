@@ -33,6 +33,7 @@ import com.deliamo.spywarecheck.domain.model.ScanFinding
 import com.deliamo.spywarecheck.domain.model.Severity
 import com.deliamo.spywarecheck.ui.components.AppScaffold
 import com.deliamo.spywarecheck.ui.components.FindingListItem
+import com.deliamo.spywarecheck.ui.components.HomeFooterBar
 
 @Composable
 fun ScanScreen(
@@ -40,6 +41,7 @@ fun ScanScreen(
     onStartScan: () -> Unit,
     onOpenFinding: (String) -> Unit,
     onQuickExit: () -> Unit,
+    onHome: () -> Unit,
     vm: ScanViewModel
 ) {
     val context = LocalContext.current
@@ -49,7 +51,8 @@ fun ScanScreen(
         title = "Scan",
         onQuickExit = onQuickExit,
         showBack = true,
-        onBack = onBack
+        onBack = onBack,
+        footer = { HomeFooterBar(onHome = onHome) }
     )
     { padding ->
         Column(

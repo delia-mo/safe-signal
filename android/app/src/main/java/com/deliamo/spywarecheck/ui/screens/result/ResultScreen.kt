@@ -18,6 +18,7 @@ import com.deliamo.spywarecheck.domain.model.QuickCheckResult
 import com.deliamo.spywarecheck.domain.model.QuickRisk
 import com.deliamo.spywarecheck.ui.components.AppScaffold
 import com.deliamo.spywarecheck.ui.components.BulletItem
+import com.deliamo.spywarecheck.ui.components.HomeFooterBar
 import com.deliamo.spywarecheck.ui.screens.quickcheck.QuickCheckViewModel
 
 @Composable
@@ -25,6 +26,7 @@ fun ResultScreen(
     onBack: () -> Unit,
     onQuickExit: () -> Unit,
     onStartScanGated: () -> Unit,
+    onHome: () -> Unit,
     vm: QuickCheckViewModel
 ) {
     val result: QuickCheckResult = remember { vm.buildResult() }
@@ -32,7 +34,8 @@ fun ResultScreen(
         title = "Ergebnis",
         onQuickExit = onQuickExit,
         showBack = true,
-        onBack = onBack
+        onBack = onBack,
+        footer = { HomeFooterBar(onHome = onHome) }
     ) { padding ->
 
         Column(

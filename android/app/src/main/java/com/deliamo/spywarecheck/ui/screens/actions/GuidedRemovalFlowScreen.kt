@@ -1,4 +1,4 @@
-package com.deliamo.spywarecheck.ui.actions.flows
+package com.deliamo.spywarecheck.ui.screens.actions
 
 import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
@@ -17,11 +17,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.platform.LocalContext
 import com.deliamo.spywarecheck.domain.model.ScanFinding
+import com.deliamo.spywarecheck.ui.actions.flows.GuidedFlowSpec
 import com.deliamo.spywarecheck.ui.components.AppScaffold
 import com.deliamo.spywarecheck.ui.screens.scan.ScanUiState
 import com.deliamo.spywarecheck.ui.screens.scan.ScanViewModel
 import com.deliamo.spywarecheck.ui.actions.flows.steps.*
 import com.deliamo.spywarecheck.ui.actions.util.onOpenSettings
+import com.deliamo.spywarecheck.ui.components.HomeFooterBar
 
 @Composable
 fun GuidedRemovalFlowScreen(
@@ -32,6 +34,7 @@ fun GuidedRemovalFlowScreen(
     onQuickExit: () -> Unit,
     onNavigateStep: (Int) -> Unit,
     onFinish: () -> Unit,
+    onHome: () -> Unit,
     scanVm: ScanViewModel
 ) {
     val context = LocalContext.current
@@ -49,7 +52,8 @@ fun GuidedRemovalFlowScreen(
         title = spec.title,
         onQuickExit = onQuickExit,
         showBack = true,
-        onBack = onBack
+        onBack = onBack,
+        footer = { HomeFooterBar(onHome = onHome) }
     ) { padding: PaddingValues ->
         Column(
             modifier = Modifier
