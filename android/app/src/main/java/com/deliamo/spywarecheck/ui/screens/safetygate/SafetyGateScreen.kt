@@ -19,10 +19,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.deliamo.spywarecheck.domain.safetygate.SafetyGateSpec
 import com.deliamo.spywarecheck.ui.components.AppScaffold
+import com.deliamo.spywarecheck.ui.components.BulletItem
 
 @Composable
 fun SafetyGateScreen(
+    spec: SafetyGateSpec,
     onContinue: () -> Unit,
     onCancel: () -> Unit,
     onQuickExit: () -> Unit
@@ -30,7 +33,7 @@ fun SafetyGateScreen(
     var showMoreInfo by remember { mutableStateOf(false) }
 
     AppScaffold(
-        title = "Bist du gerade in Sicherheit?", // Todo change title
+        title = spec.title,
         onQuickExit = onQuickExit,
         showBack = false,
     ) { padding ->
@@ -39,29 +42,20 @@ fun SafetyGateScreen(
                 .padding(padding)
                 .padding(16.dp)
         ) {
-            Text(
-                text = "Bist du gerade in einer sicheren Situation?",
-                style = MaterialTheme.typography.titleLarge
-            )
+            Text(spec.headline, style = MaterialTheme.typography.titleLarge)
 
             Spacer(Modifier.height(8.dp))
 
-            Text(
-                text = "Ein Scan des Handys oder das Entfernen einer App kann auffallen." +
-                    "Mach das nur, wenn die Tatperson gerade nicht in deiner Nähe ist.",
-                style = MaterialTheme.typography.bodyMedium
-            )
+            Text(spec.body, style = MaterialTheme.typography.bodyMedium)
 
             Spacer(Modifier.height(16.dp))
 
-            Bullet(text = "Änderungen können auffallen, z.B. wenn die Tatperson deinen Standort nicht mehr sehen kann.")
-            Bullet(text = "Wenn du Beweise sichern willst: Mache Screenshots oder Notizen bevor du etwas löschst oder änderst.")
-            Bullet(text = "Quick Exit oder Abbrechen ist jederzeit möglich.")
+            spec.bullets.forEach { BulletItem(it) }
 
             Spacer(Modifier.height(12.dp))
 
             TextButton(onClick = { showMoreInfo = true}) {
-                Text("Warum ist das wichtig?")
+                Text(spec.moreInfoLabel)
             }
 
             Spacer(Modifier.height(20.dp))
@@ -70,7 +64,7 @@ fun SafetyGateScreen(
                 onClick = onContinue,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Ich bin sicher (Weiter)")
+                Text(spec.continueLabel)
             }
 
             Spacer(Modifier.height(8.dp))
@@ -79,7 +73,7 @@ fun SafetyGateScreen(
                 onClick = onCancel,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Jetzt nicht.")
+                Text(spec.cancelLabel)
             }
         }
     }
@@ -93,22 +87,10 @@ fun SafetyGateScreen(
                     Text("OK")
                 }
             },
-            title = { Text("Warum wird das gefragt?") },
+            title = { Text(spec.dialogTitle) },
             text = {
-                Text(
-                    "Manche Apps, mit denen überwacht werden kann, merken, wenn Berechtigungen " +
-                    "entzogen werden oder sie entfernt werden. Das kann der Tatperson auffallen und " +
-                    "im schlimmsten Fall zu Stress führen. Wenn du unsicher bist, stoppe hier und " +
-                    "nutze später einen sicheren Moment."
-                )
+                Text(spec.dialogText)
             }
         )
-    }
-}
-@Composable
-private fun Bullet(text: String) {
-    Row(modifier = Modifier.padding(vertical = 4.dp)) {
-        Text("• ")
-        Text(text, style = MaterialTheme.typography.bodyMedium)
     }
 }
