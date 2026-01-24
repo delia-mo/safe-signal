@@ -65,6 +65,7 @@ dependencies {
     implementation(libs.compose.material3)
     implementation(libs.androidx.benchmark.traceprocessor)
     implementation("androidx.datastore:datastore:1.2.0")
+    implementation("androidx.datastore:datastore-preferences:1.2.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
