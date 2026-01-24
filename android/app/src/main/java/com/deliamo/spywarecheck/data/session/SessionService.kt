@@ -39,4 +39,6 @@ class SessionService(private val store: SessionStore) {
         }
         store.save(s.copy(actionStatus = newMap, lastScanAtMillis = System.currentTimeMillis()))
     }
+
+    suspend fun hasBaseline(): Boolean = store.load().baseline != null
 }

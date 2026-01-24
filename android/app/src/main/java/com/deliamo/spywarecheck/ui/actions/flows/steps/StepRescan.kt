@@ -1,13 +1,17 @@
 package com.deliamo.spywarecheck.ui.actions.flows.steps
 
 import android.content.Context
+import android.net.Uri
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.deliamo.spywarecheck.data.session.SessionService
+import com.deliamo.spywarecheck.data.session.SessionStore
 import com.deliamo.spywarecheck.ui.screens.scan.ScanUiState
 import com.deliamo.spywarecheck.ui.screens.scan.ScanViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun StepRescanOutcome(
@@ -44,6 +48,7 @@ fun StepRescanOutcome(
                     waitingForRescan = false
                 }
             }
+
             else -> Unit
         }
     }
@@ -72,7 +77,10 @@ fun StepRescanOutcome(
 
     if (isRunning) {
         Spacer(Modifier.height(10.dp))
-        Text("Gerät wird gescannt. Das kann einen Moment dauern.", style = MaterialTheme.typography.bodySmall)
+        Text(
+            "Gerät wird gescannt. Das kann einen Moment dauern.",
+            style = MaterialTheme.typography.bodySmall
+        )
         Spacer(Modifier.height(6.dp))
         LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
     }
@@ -100,9 +108,27 @@ fun StepRescanOutcome(
             }
         } else {
             Text("Geschafft 🎉", style = MaterialTheme.typography.titleMedium)
-            Text("Der Hinweis ist verschwunden. Gut gemacht!", style = MaterialTheme.typography.bodyMedium)
+            Text(
+                "Der Hinweis ist verschwunden. Gut gemacht!",
+                style = MaterialTheme.typography.bodyMedium
+            )
             Spacer(Modifier.height(12.dp))
-            Button(onClick = onFinish, modifier = Modifier.fillMaxWidth()) { Text("Fertig") }
+            val scope = rememberCoroutineScope()
+
+            Button(
+                onClick = {
+                    val decodedId = Uri.decode(relevantFindingId)
+
+                    scope.launch {
+                        val service = SessionService(SessionStore(context.applicationContext))
+                        service.markActionStatus(decodedId, "DONE")
+                        onFinish()
+                    }
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Fertig")
+            }
         }
     }
 }

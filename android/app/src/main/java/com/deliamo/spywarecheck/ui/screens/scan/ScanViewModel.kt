@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deliamo.spywarecheck.data.scanner.AndroidScanner
+import com.deliamo.spywarecheck.data.session.SessionService
+import com.deliamo.spywarecheck.data.session.SessionStore
 import com.deliamo.spywarecheck.domain.model.ScanResult
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,8 +32,15 @@ class ScanViewModel: ViewModel() {
 
         viewModelScope.launch {
             try {
+                val appContext = context.applicationContext
                 val scanner = AndroidScanner(context.applicationContext)
                 val result = scanner.run()
+
+                val sessionService = SessionService(SessionStore(appContext))
+                sessionService.onScanCompleted(result) // saves baseline if none
+                if(sessionService.hasBaseline()) {
+                    sessionService.updateResolvedFromRescan(result)
+                }
                 _state.value = ScanUiState.Done(result)
             } catch (t: Throwable) {
                 _state.value = ScanUiState.Error(
