@@ -24,6 +24,7 @@ import com.deliamo.spywarecheck.ui.screens.actions.MeasuresScreen
 import com.deliamo.spywarecheck.ui.screens.finding.FindingDetailScreen
 import com.deliamo.spywarecheck.ui.screens.quickcheck.QuickCheckScreen
 import com.deliamo.spywarecheck.ui.screens.quickcheck.QuickCheckViewModel
+import com.deliamo.spywarecheck.ui.screens.report.ReportScreen
 import com.deliamo.spywarecheck.ui.screens.result.ResultScreen
 import com.deliamo.spywarecheck.ui.screens.safetygate.SafetyGatePresets
 import com.deliamo.spywarecheck.ui.screens.safetygate.SafetyGateScreen
@@ -59,6 +60,7 @@ fun SpywareCheckApp() {
     val startScanGated: () -> Unit = { navController.navigate(Routes.SCAN_SAFETY_GATE) }
     val openActions: () -> Unit = { navController.navigate(Routes.MEASURES) }
     val goBack: () -> Unit = { navController.popBackStack() }
+  val onOpenReport: () -> Unit = { navController.navigate(Routes.REPORT)}
     val quickCheckVm: QuickCheckViewModel = viewModel()
     val goHome: () -> Unit = {
         navController.navigate(Routes.START) {
@@ -76,7 +78,7 @@ fun SpywareCheckApp() {
             StartScreen(
                 onStartQuickCheck = startQuickCheck,
                 onStartScanGated = startScanGated,
-                onOpenReport = {},
+                onOpenReport = onOpenReport,
                 onOpenActions = openActions,
                 onQuickExit = quickExit,
             )
@@ -219,5 +221,15 @@ fun SpywareCheckApp() {
                 onQuickExit = quickExit,
             )
         }
+
+      composable(Routes.REPORT) {
+        ReportScreen(
+          onBack = { navController.popBackStack() },
+          onQuickExit = quickExit,
+          onOpenMeasures = { navController.navigate(Routes.MEASURES) },
+          onOpenFinding = { id -> navController.navigate(Routes.findingDetail(id)) }
+        )
+      }
+
     }
 }

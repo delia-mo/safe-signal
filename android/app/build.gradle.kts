@@ -67,11 +67,17 @@ dependencies {
     implementation("androidx.datastore:datastore:1.2.0")
     implementation("androidx.datastore:datastore-preferences:1.2.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
-    testImplementation(libs.junit)
+  implementation(libs.androidx.compiler)
+  testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
-}
+configurations.all {
+      exclude(group = "com.google.guava", module = "listenablefuture")
+    }
+  }
+
+
