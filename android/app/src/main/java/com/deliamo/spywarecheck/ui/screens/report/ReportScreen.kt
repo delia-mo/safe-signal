@@ -12,8 +12,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.*
@@ -24,6 +28,7 @@ import com.deliamo.spywarecheck.domain.report.ActionUiState
 import com.deliamo.spywarecheck.domain.session.StoredFinding
 import com.deliamo.spywarecheck.ui.components.AppCard
 import com.deliamo.spywarecheck.ui.components.AppScaffold
+import com.deliamo.spywarecheck.ui.components.HomeFooterBar
 import java.util.Date
 
 @Composable
@@ -32,10 +37,12 @@ fun ReportScreen(
   onQuickExit: () -> Unit,
   onOpenMeasures: () -> Unit,
   onOpenFinding: (String) -> Unit,
+  onHome: () -> Unit,
   vm: ReportViewModel = viewModel()
 ) {
   val ctx = androidx.compose.ui.platform.LocalContext.current
   val state by vm.ui.collectAsState()
+  var confirmDelete by remember { mutableStateOf(false) }
 
   LaunchedEffect(Unit) { vm.load(ctx) }
 
@@ -43,7 +50,8 @@ fun ReportScreen(
     title = "Report",
     onQuickExit = onQuickExit,
     showBack = true,
-    onBack = onBack
+    onBack = onBack,
+    footer = { HomeFooterBar(onHome = onHome) }
   ) { padding: PaddingValues ->
 
     Column(
@@ -63,7 +71,7 @@ fun ReportScreen(
         return@Column
       }
 
-      if (!state.hasBaseLine) {
+      if (!state.hasBaseline) {
         Text("Noch kein Report verfügbar.", style = MaterialTheme.typography.titleMedium)
         Text(
           "Starte zuerst einen Scan. Danach speichern wir den ersten Scan als Report-Basis.",
@@ -82,8 +90,8 @@ fun ReportScreen(
 
       AccordionSection(
         title = "Gefundene Hinweise (${state.findingsBaseline.size})",
-        subtitle = "Diese Liste bleibt bestehen (Baseline)",
-        defaultExpanded = true
+        subtitle = "Alles, was beim ersten Scan gefunden wurde",
+        defaultExpanded = false
       ) {
         FindingsList(
           findings = state.findingsBaseline,
@@ -95,7 +103,7 @@ fun ReportScreen(
       AccordionSection(
         title = "Offene Maßnahmen (${open.size})",
         subtitle = "Noch nicht abgeschlossen",
-        defaultExpanded = true
+        defaultExpanded = false
       ) {
         if (open.isEmpty()) {
           Text("Keine offenen Maßnahmen.", style = MaterialTheme.typography.bodyMedium)
@@ -116,7 +124,7 @@ fun ReportScreen(
 
       AccordionSection(
         title = "Erledigte Maßnahmen (${done.size})",
-        subtitle = "Abgeschlossen / gelöst",
+        subtitle ="",
         defaultExpanded = false
       ) {
         if (done.isEmpty()) {
@@ -135,8 +143,8 @@ fun ReportScreen(
 
       AccordionSection(
         title = "Empfohlene nächste Schritte",
-        subtitle = "Kurz & handlungsorientiert",
-        defaultExpanded = true
+        subtitle = "",
+        defaultExpanded = false
       ) {
         val steps = buildNextSteps(open)
         steps.forEach { s -> Text("• $s", style = MaterialTheme.typography.bodyMedium) }
@@ -146,6 +154,32 @@ fun ReportScreen(
         "Hinweis: Der Report dient zur Orientierung und Dokumentation – er ist kein forensischer Beweis.",
         style = MaterialTheme.typography.bodySmall
       )
+
+      OutlinedButton(
+        onClick = { confirmDelete = true },
+        modifier = Modifier.fillMaxWidth()
+      ) {
+        Text("Alles löschen")
+      }
+
+      if (confirmDelete) {
+        AlertDialog(
+          onDismissRequest = { confirmDelete = false },
+          title = { Text("Report wirklich löschen?") },
+          text = { Text("Damit werden alle gespeicherten Scan- und Maßnahmen-Daten gelöscht.") },
+          confirmButton = {
+            Button(
+              onClick = {
+                confirmDelete = false
+                vm.clearAll(ctx)
+              }
+            ) { Text("Löschen") }
+          },
+          dismissButton = {
+            TextButton(onClick = { confirmDelete = false }) { Text("Abbrechen") }
+          }
+        )
+      }
     }
   }
 }

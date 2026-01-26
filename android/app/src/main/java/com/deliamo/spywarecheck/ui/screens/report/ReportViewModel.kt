@@ -9,8 +9,8 @@ import com.deliamo.spywarecheck.domain.report.ReportUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.jvm.Throws
 
 class ReportViewModel : ViewModel() {
 
@@ -39,7 +39,7 @@ class ReportViewModel : ViewModel() {
         }
         _ui.value = ReportUiState(
           isLoading = false,
-          hasBaseLine = baseline != null,
+          hasBaseline = baseline != null,
           baslineAtMillis = baseline?.createdAdMills,
           findingsBaseline = baseline?.findings ?: emptyList(),
           actionStatusByFindingId = statusMap
@@ -47,11 +47,37 @@ class ReportViewModel : ViewModel() {
       } catch (t: Throwable) {
         _ui.value = ReportUiState(
           isLoading = false,
-          hasBaseLine = false,
+          hasBaseline = false,
           error = t.message ?: "Report konnte nicht geladen werden."
         )
       }
     }
 
+  }
+
+  fun clearAll(context: Context) {
+    viewModelScope.launch {
+      try {
+        _ui.update { it.copy(isLoading = true, error = null) }
+
+        SessionStore(context.applicationContext).clear()
+
+        _ui.value = ReportUiState(
+          isLoading = false,
+          hasBaseline = false,
+          baslineAtMillis = null,
+          lastScanAtMillis = null,
+          findingsBaseline = emptyList(),
+          actionStatusByFindingId = emptyMap()
+        )
+      } catch (t: Throwable) {
+        _ui.update {
+          it.copy(
+            isLoading = false,
+            error = t.message ?: "Konnte Report nicht löschen."
+          )
+        }
+      }
+    }
   }
 }

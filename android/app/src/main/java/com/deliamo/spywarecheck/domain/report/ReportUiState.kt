@@ -5,11 +5,11 @@ import com.deliamo.spywarecheck.domain.session.StoredFinding
 enum class ActionUiState { NOT_STARTED, IN_PROGRESS, DONE, SKIPPED }
 
 data class ReportUiState(
-    val isLoading: Boolean = true,
-    val hasBaseLine: Boolean = false,
-    val baslineAtMillis: Long? = null,
-    val lastScanAtMillis: Long? = null,
-    val findingsBaseline: List<StoredFinding> = emptyList(),
-    val actionStatusByFindingId: Map<String, ActionUiState> = emptyMap(),
-    val error: String? = null
+  val isLoading: Boolean = true,
+  val hasBaseline: Boolean = false,
+  val baslineAtMillis: Long? = null,
+  val lastScanAtMillis: Long? = null,
+  val findingsBaseline: List<StoredFinding> = emptyList(),
+  val actionStatusByFindingId: Map<String, ActionUiState> = emptyMap(),
+  val error: String? = null
 )
