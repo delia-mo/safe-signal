@@ -17,19 +17,21 @@ val SurfaceLight = Color(0xFFFFFFFF)
 val SurfaceTint = Color(0xffDDEFF2)
 val OnDark = Color(0xFF0F172A)        // slate-900
 val OutlineLight = Color(0xFFE2E8F0)  // slate-200
+val SurfaceVariantLight = Color(0xFFC4D5DA)
+val OutlineVariantLight = Color(0xFFAAB9C0)
+val OnSurfaceVariantLight = Color(0xFF334155) // gut lesbar
+val SecondaryContainerLight = Color(0xFFCFFEF5)
+val OnSecondaryContainerLight = OnDark               // slate-900
+
 
 val BgDark = Color(0xFF0B1220)        // very dark blue-ish
 val SurfaceDark = Color(0xFF111827)   // gray-900
 val OnLight = Color(0xFFE2E8F0)       // slate-200
-
-val SurfaceVariantLight = Color(0xFFC4D5DA)
-val OutlineVariantLight = Color(0xFFAAB9C0)
-
-val OnSurfaceVariantLight = Color(0xFF334155) // gut lesbar
-
 val SurfaceVariantDark = Color(0xFF222937)    // leicht heller als SurfaceDark
 val OutlineVariantDark = Color(0xFF3F4653)
 val OnSurfaceVariantDark = OnLight
+val SecondaryContainerDark = Color(0xFF155E75)       // cyan-800-ish (oder dunkles teal/cyan)
+val OnSecondaryContainerDark = OnLight               // slate-200
 
 
 val Error = Color(0xFFB91C1C)

@@ -8,6 +8,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedCard
@@ -149,7 +152,7 @@ private fun ActionCard(
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text(title, style = MaterialTheme.typography.titleMedium)
             Text(subtitle, style = MaterialTheme.typography.bodyMedium)
-            OutlinedButton(onClick = onClick, modifier = Modifier.fillMaxWidth()) {
+            FilledTonalButton(onClick = onClick, modifier = Modifier.fillMaxWidth()) {
                 Text(buttonText)
             }
         }
@@ -167,7 +170,7 @@ private fun SmallActionCard(
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             Text(title, style = MaterialTheme.typography.titleSmall)
             Text(subtitle, style = MaterialTheme.typography.bodySmall)
-            TextButton(onClick = onClick) { Text("Öffnen") }
+          FilledTonalButton(onClick = onClick) { Text("Öffnen") }
         }
     }
 }
