@@ -69,7 +69,7 @@ fun StartScreen(
             )
 
             // Primary Action
-            PrimaryActionCard(
+            ActionCard(
                 title = "Quick Check",
                 subtitle = "Schnell einschätzen, ob ein Scan sinnvoll ist.",
                 buttonText = "Starten",
@@ -77,7 +77,7 @@ fun StartScreen(
             )
 
             // Scan Action (gated)
-            ActionCard(
+            PrimaryActionCard(
                 title = "Scan starten",
                 subtitle = "Prüft Indikatoren, z.B. Geräteadministration oder Barrierefreiheitseinstellungen",
                 buttonText = "Zum Scan",
