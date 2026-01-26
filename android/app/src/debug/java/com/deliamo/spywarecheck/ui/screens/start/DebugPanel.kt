@@ -17,8 +17,6 @@ fun DebugPanel() {
           modifier = Modifier.padding(12.dp),
           verticalArrangement = Arrangement.spacedBy(8.dp)
       ) {
-          Text("Debug", style = MaterialTheme.typography.titleSmall)
-
           Row(
               modifier = Modifier.fillMaxWidth(),
               horizontalArrangement = Arrangement.SpaceBetween
@@ -38,11 +36,6 @@ fun DebugPanel() {
             )
 
           }
-
-          Text(
-              text = "Hinweis: Debug-Einstellungen gelten nur für diese Session.",
-              style = MaterialTheme.typography.bodySmall
-          )
       }
   }
 }

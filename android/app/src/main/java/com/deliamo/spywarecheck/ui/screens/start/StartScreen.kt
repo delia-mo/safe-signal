@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -40,10 +42,10 @@ fun StartScreen(
         Column(
             modifier = Modifier
                 .padding(padding)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+                .padding(16.dp)
+              .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            DebugContent()
             Text(
                 text = "Du bist nicht allein. Digitale Gewalt ist real.",
                 style = MaterialTheme.typography.bodyLarge
@@ -112,7 +114,8 @@ fun StartScreen(
                 style = MaterialTheme.typography.bodySmall
             )
             // Debug panel area
-            debugContent?.invoke()
+          DebugContent()
+          debugContent?.invoke()
         }
     }
 }
