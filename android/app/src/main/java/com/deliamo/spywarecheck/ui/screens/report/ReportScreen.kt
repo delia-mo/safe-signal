@@ -27,6 +27,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.deliamo.spywarecheck.domain.report.ActionUiState
 import com.deliamo.spywarecheck.domain.session.StoredFinding
 import com.deliamo.spywarecheck.ui.components.AppScaffold
+import com.deliamo.spywarecheck.ui.components.HomeFooterBar
 import java.util.Date
 
 @Composable
@@ -35,6 +36,7 @@ fun ReportScreen(
   onQuickExit: () -> Unit,
   onOpenMeasures: () -> Unit,
   onOpenFinding: (String) -> Unit,
+  onHome: () -> Unit,
   vm: ReportViewModel = viewModel()
 ) {
   val ctx = androidx.compose.ui.platform.LocalContext.current
@@ -47,7 +49,8 @@ fun ReportScreen(
     title = "Report",
     onQuickExit = onQuickExit,
     showBack = true,
-    onBack = onBack
+    onBack = onBack,
+    footer = { HomeFooterBar(onHome = onHome) }
   ) { padding: PaddingValues ->
 
     Column(
@@ -86,8 +89,8 @@ fun ReportScreen(
 
       AccordionSection(
         title = "Gefundene Hinweise (${state.findingsBaseline.size})",
-        subtitle = "Diese Liste bleibt bestehen (Baseline)",
-        defaultExpanded = true
+        subtitle = "Alles, was beim ersten Scan gefunden wurde",
+        defaultExpanded = false
       ) {
         FindingsList(
           findings = state.findingsBaseline,
@@ -99,7 +102,7 @@ fun ReportScreen(
       AccordionSection(
         title = "Offene Maßnahmen (${open.size})",
         subtitle = "Noch nicht abgeschlossen",
-        defaultExpanded = true
+        defaultExpanded = false
       ) {
         if (open.isEmpty()) {
           Text("Keine offenen Maßnahmen.", style = MaterialTheme.typography.bodyMedium)
@@ -120,7 +123,7 @@ fun ReportScreen(
 
       AccordionSection(
         title = "Erledigte Maßnahmen (${done.size})",
-        subtitle = "Abgeschlossen / gelöst",
+        subtitle ="",
         defaultExpanded = false
       ) {
         if (done.isEmpty()) {
@@ -139,8 +142,8 @@ fun ReportScreen(
 
       AccordionSection(
         title = "Empfohlene nächste Schritte",
-        subtitle = "Kurz & handlungsorientiert",
-        defaultExpanded = true
+        subtitle = "",
+        defaultExpanded = false
       ) {
         val steps = buildNextSteps(open)
         steps.forEach { s -> Text("• $s", style = MaterialTheme.typography.bodyMedium) }

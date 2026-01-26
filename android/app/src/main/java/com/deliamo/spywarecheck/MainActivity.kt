@@ -227,6 +227,7 @@ fun SpywareCheckApp() {
           onBack = { navController.popBackStack() },
           onQuickExit = quickExit,
           onOpenMeasures = { navController.navigate(Routes.MEASURES) },
+          onHome = goHome,
           onOpenFinding = { id -> navController.navigate(Routes.findingDetail(id)) }
         )
       }
