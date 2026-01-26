@@ -38,11 +38,13 @@ import com.deliamo.spywarecheck.ui.util.quickExitToBrowser
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+      /*
         window.setFlags(
             // Disable Screenshots
             WindowManager.LayoutParams.FLAG_SECURE,
             WindowManager.LayoutParams.FLAG_SECURE
         )
+       */
         setContent {
             SpywareCheckTheme {
                 SpywareCheckApp()
