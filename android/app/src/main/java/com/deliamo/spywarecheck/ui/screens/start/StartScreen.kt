@@ -48,7 +48,7 @@ fun StartScreen(
         ) {
             Text(
                 text = "Du bist nicht allein. Digitale Gewalt ist real.",
-                style = MaterialTheme.typography.bodyLarge
+                style = MaterialTheme.typography.headlineSmall
             )
             Text(
                 text = buildAnnotatedString {
@@ -57,7 +57,7 @@ fun StartScreen(
                         append("Einstellungen und App-Berechtigungen")
                     }
                     append(
-                        ", die häufig von Überwachungs-Apps genutzt werden und helfen dir beim Absichern." +
+                        ", die häufig von Überwachungs-Apps genutzt werden und helfen dir beim Absichern. \n" +
                                 "Die App liefert "
                     )
                     withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
@@ -65,7 +65,7 @@ fun StartScreen(
                     }
                     append(" und ersetzt keine forensische Untersuchung.")
                 },
-                style = MaterialTheme.typography.bodySmall
+                style = MaterialTheme.typography.bodyMedium
             )
 
             // Primary Action

@@ -164,11 +164,6 @@ private fun ReportHeader(baselineAt: Long?, lastScanAt: Long?) {
         "Letzter Scan: ${formatDateTime(lastScanAt)}",
         style = MaterialTheme.typography.bodyMedium
       )
-
-      Text(
-        "Diese Ansicht bleibt erhalten, auch wenn du neu scannst.",
-        style = MaterialTheme.typography.bodySmall
-      )
     }
   }
 }

@@ -79,5 +79,5 @@ fun SpywareCheckTheme(
       else -> LightColorScheme
     }
 
-    MaterialTheme(colorScheme = colorScheme, typography = Typography, content = content)
+    MaterialTheme(colorScheme = colorScheme, typography = AppTypography, content = content)
   }
