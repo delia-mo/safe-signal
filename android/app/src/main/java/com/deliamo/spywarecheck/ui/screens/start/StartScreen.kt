@@ -47,7 +47,7 @@ fun StartScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Text(
-                text = "Du bist nicht allein. Digitale Gewalt ist real.",
+                text = "Du bist nicht allein. \nDigitale Gewalt ist real.",
                 style = MaterialTheme.typography.headlineSmall
             )
             Text(
@@ -70,7 +70,7 @@ fun StartScreen(
 
             // Primary Action
             PrimaryActionCard(
-                title = "Quick Check (2 Min)",
+                title = "Quick Check",
                 subtitle = "Schnell einschätzen, ob ein Scan sinnvoll ist.",
                 buttonText = "Starten",
                 onClick = onStartQuickCheck
@@ -80,7 +80,7 @@ fun StartScreen(
             ActionCard(
                 title = "Scan starten",
                 subtitle = "Prüft Indikatoren, z.B. Geräteadministration oder Barrierefreiheitseinstellungen",
-                buttonText = "Zum Safety Gate",
+                buttonText = "Zum Scan",
                 onClick = onStartScanGated
             )
 

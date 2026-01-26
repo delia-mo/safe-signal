@@ -9,7 +9,7 @@ data class SafetyGateSpec(
         "Wenn du unsicher bist: ändere nichts und hol dir Unterstützung.",
         "Du kannst jederzeit den Quick-Exit nutzen oder Aktionen abbrechen."
     ),
-    val cancelLabel: String = "Jetzt nicht",
+    val cancelLabel: String = "Zurück zur Übersicht",
     val continueLabel: String = "Ich bin sicher (Weiter)",
     val moreInfoLabel: String = "Warum ist das wichtig?",
     val dialogTitle: String = "Warum wird das gefragt?",
