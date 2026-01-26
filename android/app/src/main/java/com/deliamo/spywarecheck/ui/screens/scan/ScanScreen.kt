@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -81,12 +82,12 @@ fun ScanScreen(
                 }
 
                 is ScanUiState.Running -> {
-                    Row(
+                    Column(
                         modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+
                     ) {
-                        CircularProgressIndicator()
+                        LinearProgressIndicator(Modifier.fillMaxWidth())
+                      Spacer(Modifier.height(8.dp))
                         Text(
                             text = "Scan läuft... ",
                             style = MaterialTheme.typography.bodyLarge
