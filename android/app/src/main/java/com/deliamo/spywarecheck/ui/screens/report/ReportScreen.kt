@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -23,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.deliamo.spywarecheck.domain.report.ActionUiState
 import com.deliamo.spywarecheck.domain.session.StoredFinding
+import com.deliamo.spywarecheck.ui.components.AppCard
 import com.deliamo.spywarecheck.ui.components.AppScaffold
 import java.util.Date
 
@@ -152,7 +152,7 @@ fun ReportScreen(
 
 @Composable
 private fun ReportHeader(baselineAt: Long?, lastScanAt: Long?) {
-  Card {
+  AppCard {
     Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
       Text("Report-Stand", style = MaterialTheme.typography.titleMedium)
 
@@ -246,7 +246,7 @@ private fun AccordionSection(
 ) {
   var expanded by remember { mutableStateOf(defaultExpanded) }
 
-  Card {
+  AppCard {
     Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
       Row(
         modifier = Modifier

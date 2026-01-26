@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedCard
@@ -19,6 +18,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import com.deliamo.spywarecheck.ui.components.AppCard
 import com.deliamo.spywarecheck.ui.components.AppScaffold
 import com.deliamo.spywarecheck.ui.debug.DebugContent
 
@@ -124,15 +124,15 @@ private fun PrimaryActionCard(
     buttonText: String,
     onClick: () -> Unit
 ) {
-    Card {
-        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text(title, style = MaterialTheme.typography.titleMedium)
-            Text(subtitle, style = MaterialTheme.typography.bodyMedium)
-            Button(onClick = onClick, modifier = Modifier.fillMaxWidth()) {
-                Text(buttonText)
-            }
-        }
-    }
+  AppCard {
+      Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+          Text(title, style = MaterialTheme.typography.titleMedium)
+          Text(subtitle, style = MaterialTheme.typography.bodyMedium)
+          Button(onClick = onClick, modifier = Modifier.fillMaxWidth()) {
+              Text(buttonText)
+          }
+      }
+  }
 }
 
 @Composable
