@@ -14,6 +14,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -25,6 +26,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.material3.FilledTonalButton
 import com.deliamo.spywarecheck.domain.model.QuickAnswer
 import com.deliamo.spywarecheck.ui.components.AppScaffold
 import com.deliamo.spywarecheck.ui.components.HomeFooterBar
@@ -63,7 +65,7 @@ fun QuickCheckScreen(
                     .padding(padding)
                     .padding(16.dp)
             ) {
-                Divider()
+                HorizontalDivider()
                 Spacer(Modifier.height(8.dp))
                 // Progress
                 Text(
@@ -90,7 +92,7 @@ fun QuickCheckScreen(
                 }
 
                 Spacer(Modifier.height(18.dp))
-                Divider()
+                HorizontalDivider()
                 Spacer(Modifier.height(8.dp))
 
                 TextButton(
@@ -105,7 +107,7 @@ fun QuickCheckScreen(
                         contentDescription = null
                     )
                     Spacer(Modifier.width(6.dp))
-                    Text("Vorherige Frage") // TODO: formulierung
+                    Text("Letzte Frage") // TODO: formulierung
                 }
 
                 Spacer(Modifier.height(10.dp))
@@ -125,13 +127,13 @@ private fun AnswerButtons(
     onAnswer: (QuickAnswer) -> Unit
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        Button(
+        FilledTonalButton(
             onClick = { onAnswer(QuickAnswer.YES) },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Ja")
         }
-        Button(
+      FilledTonalButton(
             onClick = { onAnswer(QuickAnswer.NO) },
             modifier = Modifier.fillMaxWidth()
         ) {

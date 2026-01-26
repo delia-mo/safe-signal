@@ -20,7 +20,7 @@ val OutlineLight = Color(0xFFE2E8F0)  // slate-200
 val SurfaceVariantLight = Color(0xFFC4D5DA)
 val OutlineVariantLight = Color(0xFFAAB9C0)
 val OnSurfaceVariantLight = Color(0xFF334155) // gut lesbar
-val SecondaryContainerLight = Color(0xFFCFFEF5)
+val SecondaryContainerLight = Color(0xFFC3E2E7)
 val OnSecondaryContainerLight = OnDark               // slate-900
 
 
