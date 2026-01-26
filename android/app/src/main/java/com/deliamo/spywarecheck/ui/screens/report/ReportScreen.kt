@@ -12,9 +12,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.*
@@ -36,6 +39,7 @@ fun ReportScreen(
 ) {
   val ctx = androidx.compose.ui.platform.LocalContext.current
   val state by vm.ui.collectAsState()
+  var confirmDelete by remember { mutableStateOf(false) }
 
   LaunchedEffect(Unit) { vm.load(ctx) }
 
@@ -63,7 +67,7 @@ fun ReportScreen(
         return@Column
       }
 
-      if (!state.hasBaseLine) {
+      if (!state.hasBaseline) {
         Text("Noch kein Report verfügbar.", style = MaterialTheme.typography.titleMedium)
         Text(
           "Starte zuerst einen Scan. Danach speichern wir den ersten Scan als Report-Basis.",
@@ -146,6 +150,32 @@ fun ReportScreen(
         "Hinweis: Der Report dient zur Orientierung und Dokumentation – er ist kein forensischer Beweis.",
         style = MaterialTheme.typography.bodySmall
       )
+
+      OutlinedButton(
+        onClick = { confirmDelete = true },
+        modifier = Modifier.fillMaxWidth()
+      ) {
+        Text("Alles löschen")
+      }
+
+      if (confirmDelete) {
+        AlertDialog(
+          onDismissRequest = { confirmDelete = false },
+          title = { Text("Report wirklich löschen?") },
+          text = { Text("Damit werden alle gespeicherten Scan- und Maßnahmen-Daten gelöscht.") },
+          confirmButton = {
+            Button(
+              onClick = {
+                confirmDelete = false
+                vm.clearAll(ctx)
+              }
+            ) { Text("Löschen") }
+          },
+          dismissButton = {
+            TextButton(onClick = { confirmDelete = false }) { Text("Abbrechen") }
+          }
+        )
+      }
     }
   }
 }
