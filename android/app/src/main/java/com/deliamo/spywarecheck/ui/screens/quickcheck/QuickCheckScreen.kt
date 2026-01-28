@@ -46,9 +46,7 @@ fun QuickCheckScreen(
         onQuickExit = onQuickExit,
         showBack = true,
         footer = { HomeFooterBar(onHome = onHome) },
-        onBack = {
-            if (ui.canGoBack) vm.previous() else onBack()
-        }
+        onBack = onBack
     ) { padding ->
 
         val q = ui.currentQuestion
@@ -96,7 +94,7 @@ fun QuickCheckScreen(
                 Spacer(Modifier.height(8.dp))
 
                 TextButton(
-                    onClick = onBack,
+                    onClick = { if (ui.canGoBack) vm.previous() else onBack() },
                     modifier = Modifier.align(Alignment.Start),
                     colors = ButtonDefaults.textButtonColors(
                         contentColor = MaterialTheme.colorScheme.onSurfaceVariant
