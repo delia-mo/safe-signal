@@ -1,4 +1,4 @@
-package com.deliamo.spywarecheck.ui.screens.quickcheck
+package com.deliamo.spywarecheck.presentation.quickcheck
 
 import androidx.lifecycle.ViewModel
 import com.deliamo.spywarecheck.domain.model.*

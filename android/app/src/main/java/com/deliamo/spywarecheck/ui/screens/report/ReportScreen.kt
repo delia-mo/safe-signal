@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.deliamo.spywarecheck.domain.report.ActionUiState
 import com.deliamo.spywarecheck.domain.session.StoredFinding
+import com.deliamo.spywarecheck.presentation.report.ReportViewModel
 import com.deliamo.spywarecheck.ui.components.AppCard
 import com.deliamo.spywarecheck.ui.components.AppScaffold
 import com.deliamo.spywarecheck.ui.components.HomeFooterBar

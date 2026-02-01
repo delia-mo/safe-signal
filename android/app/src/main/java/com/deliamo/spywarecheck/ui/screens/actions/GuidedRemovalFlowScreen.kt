@@ -19,8 +19,8 @@ import androidx.compose.ui.platform.LocalContext
 import com.deliamo.spywarecheck.domain.model.ScanFinding
 import com.deliamo.spywarecheck.ui.actions.flows.GuidedFlowSpec
 import com.deliamo.spywarecheck.ui.components.AppScaffold
-import com.deliamo.spywarecheck.ui.screens.scan.ScanUiState
-import com.deliamo.spywarecheck.ui.screens.scan.ScanViewModel
+import com.deliamo.spywarecheck.presentation.scan.ScanUiState
+import com.deliamo.spywarecheck.presentation.scan.ScanViewModel
 import com.deliamo.spywarecheck.ui.actions.flows.steps.*
 import com.deliamo.spywarecheck.ui.actions.util.onOpenSettings
 import com.deliamo.spywarecheck.ui.components.HomeFooterBar

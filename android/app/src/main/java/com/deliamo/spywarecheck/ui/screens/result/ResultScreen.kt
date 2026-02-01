@@ -19,7 +19,7 @@ import com.deliamo.spywarecheck.domain.model.QuickRisk
 import com.deliamo.spywarecheck.ui.components.AppScaffold
 import com.deliamo.spywarecheck.ui.components.BulletItem
 import com.deliamo.spywarecheck.ui.components.HomeFooterBar
-import com.deliamo.spywarecheck.ui.screens.quickcheck.QuickCheckViewModel
+import com.deliamo.spywarecheck.presentation.quickcheck.QuickCheckViewModel
 
 @Composable
 fun ResultScreen(

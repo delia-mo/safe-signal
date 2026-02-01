@@ -1,4 +1,4 @@
-package com.deliamo.spywarecheck.ui.screens.scan
+package com.deliamo.spywarecheck.presentation.scan
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
@@ -7,7 +7,6 @@ import com.deliamo.spywarecheck.data.scanner.AndroidScanner
 import com.deliamo.spywarecheck.data.session.SessionService
 import com.deliamo.spywarecheck.data.session.SessionStore
 import com.deliamo.spywarecheck.domain.model.ScanResult
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

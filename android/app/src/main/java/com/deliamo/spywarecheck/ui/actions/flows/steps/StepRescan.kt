@@ -10,8 +10,8 @@ import androidx.compose.ui.unit.dp
 import com.deliamo.spywarecheck.data.session.SessionService
 import com.deliamo.spywarecheck.data.session.SessionStore
 import com.deliamo.spywarecheck.domain.report.ActionUiState
-import com.deliamo.spywarecheck.ui.screens.scan.ScanUiState
-import com.deliamo.spywarecheck.ui.screens.scan.ScanViewModel
+import com.deliamo.spywarecheck.presentation.scan.ScanUiState
+import com.deliamo.spywarecheck.presentation.scan.ScanViewModel
 import kotlinx.coroutines.launch
 
 @Composable

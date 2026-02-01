@@ -1,4 +1,4 @@
-package com.deliamo.spywarecheck.ui.screens.report
+package com.deliamo.spywarecheck.presentation.report
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
@@ -38,17 +38,17 @@ class ReportViewModel : ViewModel() {
           }
         }
         _ui.value = ReportUiState(
-          isLoading = false,
-          hasBaseline = baseline != null,
-          baslineAtMillis = baseline?.createdAdMills,
-          findingsBaseline = baseline?.findings ?: emptyList(),
-          actionStatusByFindingId = statusMap
+            isLoading = false,
+            hasBaseline = baseline != null,
+            baslineAtMillis = baseline?.createdAdMills,
+            findingsBaseline = baseline?.findings ?: emptyList(),
+            actionStatusByFindingId = statusMap
         )
       } catch (t: Throwable) {
         _ui.value = ReportUiState(
-          isLoading = false,
-          hasBaseline = false,
-          error = t.message ?: "Report konnte nicht geladen werden."
+            isLoading = false,
+            hasBaseline = false,
+            error = t.message ?: "Report konnte nicht geladen werden."
         )
       }
     }
@@ -63,12 +63,12 @@ class ReportViewModel : ViewModel() {
         SessionStore(context.applicationContext).clear()
 
         _ui.value = ReportUiState(
-          isLoading = false,
-          hasBaseline = false,
-          baslineAtMillis = null,
-          lastScanAtMillis = null,
-          findingsBaseline = emptyList(),
-          actionStatusByFindingId = emptyMap()
+            isLoading = false,
+            hasBaseline = false,
+            baslineAtMillis = null,
+            lastScanAtMillis = null,
+            findingsBaseline = emptyList(),
+            actionStatusByFindingId = emptyMap()
         )
       } catch (t: Throwable) {
         _ui.update {

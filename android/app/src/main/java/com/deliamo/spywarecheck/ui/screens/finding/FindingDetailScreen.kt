@@ -1,7 +1,5 @@
 package com.deliamo.spywarecheck.ui.screens.finding
 
-import android.net.Uri
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,7 +12,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -25,8 +22,8 @@ import com.deliamo.spywarecheck.ui.actions.registry.NextBestActionRegistry
 import com.deliamo.spywarecheck.ui.components.AppScaffold
 import com.deliamo.spywarecheck.ui.components.HomeFooterBar
 import com.deliamo.spywarecheck.ui.components.SeverityChip
-import com.deliamo.spywarecheck.ui.screens.scan.ScanUiState
-import com.deliamo.spywarecheck.ui.screens.scan.ScanViewModel
+import com.deliamo.spywarecheck.presentation.scan.ScanUiState
+import com.deliamo.spywarecheck.presentation.scan.ScanViewModel
 
 @Composable
 fun FindingDetailScreen(

@@ -2,7 +2,6 @@ package com.deliamo.spywarecheck
 
 import android.net.Uri
 import android.os.Bundle
-import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
@@ -23,13 +22,13 @@ import com.deliamo.spywarecheck.ui.navigation.Routes
 import com.deliamo.spywarecheck.ui.screens.actions.MeasuresScreen
 import com.deliamo.spywarecheck.ui.screens.finding.FindingDetailScreen
 import com.deliamo.spywarecheck.ui.screens.quickcheck.QuickCheckScreen
-import com.deliamo.spywarecheck.ui.screens.quickcheck.QuickCheckViewModel
+import com.deliamo.spywarecheck.presentation.quickcheck.QuickCheckViewModel
 import com.deliamo.spywarecheck.ui.screens.report.ReportScreen
 import com.deliamo.spywarecheck.ui.screens.result.ResultScreen
 import com.deliamo.spywarecheck.ui.screens.safetygate.SafetyGatePresets
 import com.deliamo.spywarecheck.ui.screens.safetygate.SafetyGateScreen
 import com.deliamo.spywarecheck.ui.screens.scan.ScanScreen
-import com.deliamo.spywarecheck.ui.screens.scan.ScanViewModel
+import com.deliamo.spywarecheck.presentation.scan.ScanViewModel
 import com.deliamo.spywarecheck.ui.screens.start.StartScreen
 import com.deliamo.spywarecheck.ui.theme.SpywareCheckTheme
 import com.deliamo.spywarecheck.ui.util.quickExitToBrowser
