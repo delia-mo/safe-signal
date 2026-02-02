@@ -1,4 +1,4 @@
-package com.deliamo.spywarecheck.ui.actions.util
+package com.deliamo.spywarecheck.ui.platform
 
 import android.content.ActivityNotFoundException
 import android.content.Context

@@ -1,10 +1,9 @@
-package com.deliamo.spywarecheck.ui.util
+package com.deliamo.spywarecheck.ui.platform
 
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import kotlin.system.exitProcess
 
 fun quickExitToBrowser(context: Context) {
     val url = "https://www.google.com/search?q=schnelle+einfache+rezepte"
