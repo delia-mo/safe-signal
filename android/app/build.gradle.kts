@@ -6,13 +6,13 @@ plugins {
 }
 
 android {
-    namespace = "com.deliamo.spywarecheck"
+    namespace = "com.deliamo.safesignal"
     compileSdk {
         version = release(36)
     }
 
     defaultConfig {
-        applicationId = "com.deliamo.spywarecheck"
+        applicationId = "com.deliamo.safesignal"
         minSdk = 26
         targetSdk = 36
         versionCode = 1

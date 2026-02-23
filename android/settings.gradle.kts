@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "SpywareCheck"
+rootProject.name = "SafeSignal"
 include(":app")
