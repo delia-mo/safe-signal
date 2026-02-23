@@ -18,7 +18,7 @@ SafeSignal ist **kein Forensik-Tool** und liefert **keine Beweise**.
 ## Zielgruppe (MVP)
 
 Zielgruppe:
-- Nutzer:innen, die ihr Gerät auf auffällige Einstellungen / Berechtigungen prüfen möchten
+- Nutzer:innen, die vermuten, von Cyberstalking betroffen zu sein
 - Beratungs-/Unterstützungskontexte (z. B. Anleitung durch Fachpersonal)
 
 ## Annahmen (Threat Model, vereinfacht)
